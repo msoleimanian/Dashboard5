@@ -8,6 +8,8 @@ def RecommendationConstructor():
     import pandas as pd
     import time
     import plotly.express as px
+    from streamlit_option_menu import option_menu
+
 
 
 
@@ -152,14 +154,19 @@ def RecommendationConstructor():
 
     # Display the animated line using HTML
 
-    option2 = st.sidebar.selectbox(
-       "Select the Farm",
-       ("Pak choy", "Rice", "Aqua"),
-       index=1,
-       placeholder="Select the farm...",
-    )
+    st.markdown(printCostumTitleAndContenth2('Select the Fram', ''), unsafe_allow_html=True)
+    selectfarm = option_menu(None, ["Pak choy", "Rice", "Aqua"],
+                          menu_icon="forward", default_index=0, orientation="horizontal",
+                          styles={
+                              "container": {"padding": "0!important", "background-color": "#fafafa"},
+                              "icon": {"color": "orange", "font-size": "15px"},
+                              "nav-link": {"font-size": "15px", "text-align": "right", "margin": "0px",
+                                           "--hover-color": "#eee", },
+                              "nav-link-selected": {"background-color": "green"},
+                          }
+                          )
 
-    if option2 == "Rice":
+    if selectfarm == "Rice":
         st.markdown(printCostumTitleAndContenth1("Nutrient recovery recommendation", ""), unsafe_allow_html=True)
         optionSeason = st.selectbox(
             "Select the Season...",
@@ -285,5 +292,5 @@ def RecommendationConstructor():
 
         st.markdown(html, unsafe_allow_html=True)
 
-    if option2 =="Aqua":
+    if selectfarm =="Aqua":
         st.header('')

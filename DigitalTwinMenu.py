@@ -2,6 +2,7 @@ import streamlit as st
 from streamlit_option_menu import option_menu
 import DigitalTwin as digitaltwin
 import Monitoring as monitoring
+import Recommendation as recommendation
 
 def constructoemain():
 
@@ -13,4 +14,7 @@ def constructoemain():
 
     if selected == "Monitoring":
         monitoring.MonitoringConstructor()
+
+    if selected == "Recommendation":
+        recommendation.RecommendationConstructor()
 
