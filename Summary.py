@@ -266,11 +266,9 @@ def summaryConstructor():
     # Display the HTML content
 
 
-    best_season_pot_text = """
-    The system has the ability to distinguish the best and worst seasons and plots based on the most important attribute for ranking, while also considering the efficiency of other attributes relative to the best among plots. 
-    """
 
 
+    st.markdown(printCostumTitleAndContenth2('Select the Fram', ''), unsafe_allow_html=True)
     option2 = option_menu(None, ["Pak choy", "Rice", "Aqua"],
                           menu_icon="forward", default_index=0, orientation="horizontal",
                           styles={

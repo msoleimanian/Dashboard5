@@ -184,7 +184,7 @@ def insightConstructor():
 
     # Data
 
-    st.write("Select the Farms")
+    st.markdown(printCostumTitleAndContenth2('Select the Fram', ''), unsafe_allow_html=True)
     option2 = option_menu(None, ["Pak choy", "Rice", "Aqua"],
                           menu_icon="forward", default_index=0, orientation="horizontal",
                           styles={
@@ -253,8 +253,9 @@ def insightConstructor():
         # HTML styling with inline styles for black text color, thicker black border lines, and increased width
 
         html_code = f"""
+                    <h2 style="color: #000; text-align: center;">Performance Table</h2>
+
             <div style="background-color:#f4f4f4;padding:20px;border-radius:10px">
-            <h2 style="color: #000; text-align: center;">Performance Table</h2>
             <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
                 <tr>
                     <th style="border: 2px solid #000; padding: 10px;">Season</th>
@@ -296,7 +297,7 @@ def insightConstructor():
 
 
 
-        st.markdown(printCostumTitleAndContenth2("Best Performace",
+        st.markdown(printCostumTitleAndContenth2("Best Performance",
                                                  ""),
                     unsafe_allow_html=True)
 
@@ -436,10 +437,10 @@ def insightConstructor():
         height_scaling = max_score / grouped_df['plantheight'].max()
         grouped_df['score'] = grouped_df['plantheight'] * height_scaling
 
-        # HTML code
         html_code_packchoy = f"""
-                <div style="background-color:#f4f4f4;padding:20px;border-radius:10px">
-                    <h5> </h5>
+        
+            <h2 style="color: #000; text-align: center;">Performance Table</h2>
+                <div style="background-color:#f4f4f4;padding:20px;border-radius:10px">                
                     <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
                         <tr>
                             <th style="border: 2px solid #000; padding: 10px;">Generation</th>
@@ -459,6 +460,7 @@ def insightConstructor():
                     </table>
                 </div>
             """
+        # HTML code
 
         # Streamlit app
         st.markdown(html_code_packchoy, unsafe_allow_html=True)
@@ -466,7 +468,7 @@ def insightConstructor():
         col1, col2 = st.columns(2)
 
         with col1:
-            st.markdown(printCostumTitleAndContenth3("Generaion1", ""), unsafe_allow_html=True)
+            st.markdown(printCostumTitleAndContenth3("Generation1", ""), unsafe_allow_html=True)
 
             st.write("High Value Trait")
             max_weight = 214.25  # Maximum weight in KG
@@ -618,7 +620,11 @@ def insightConstructor():
             st.plotly_chart(fig)
 
     if option2 == "Aqua":
-        st.title('the growth rate of the Fishes')
+
+
+
+
+        st.markdown(printCostumTitleAndContenth3('Performance table' ,''),unsafe_allow_html=True)
         # Load the CSV data
         df = pd.read_csv('Dataset/Aqua/GrowthRate.csv')
 
@@ -639,7 +645,6 @@ def insightConstructor():
         import io
         import plotly.express as px
 
-        # Load the dataset
         data = """Date,Temperature,pH,Ammonia,DO,Salinity,LENGTH (cm),WEIGHT (kg)
         4-Jul-23,26.69,4.89,0.27,8.2,30,55.6,2.04
         11-Jul-23,26.69,4.89,0.27,8.2,30,55.8,1.76
@@ -657,8 +662,6 @@ def insightConstructor():
 
         # Convert the string data to a DataFrame
         df = pd.read_csv(io.StringIO(data))
-
-        # Display the dataset
 
         # Plot line charts for Temperature, pH, Ammonia, DO, and Salinity with anomalies highlighted
         fig_temperature = px.line(df, x='Date', y='Temperature', title='Temperature Trend')
@@ -698,3 +701,5 @@ def insightConstructor():
         st.plotly_chart(fig_ammonia)
         st.plotly_chart(fig_DO)
         st.plotly_chart(fig_salinity)
+
+

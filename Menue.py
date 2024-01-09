@@ -9,7 +9,6 @@ import Recommendation as recom
 
 
 
-st.set_page_config(layout="wide")
 
 
 def menuconstructor():

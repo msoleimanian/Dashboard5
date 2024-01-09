@@ -150,7 +150,7 @@ def exploreConstructor():
     # Display the animated line using HTML
 
 
-    st.write("Select the Farms")
+    st.markdown(printCostumTitleAndContenth2('Select the Fram', ''), unsafe_allow_html=True)
 
     option2 = option_menu(None, ["Pak choy", "Rice", "Aqua"],
                           menu_icon="forward", default_index=0, orientation="horizontal",
@@ -585,3 +585,36 @@ def exploreConstructor():
 
             # Display the animated chart
             st.plotly_chart(fig)
+
+    if option2 == 'Aqua':
+        selectdate = st.selectbox(
+                "Select the date...",
+                ("22-Aug-23", "29 - Aug - 23","5 - Sep - 23","12 - Sep - 23","19 - Sep - 23","26 - Sep - 23"),
+                index=0,
+                placeholder="Select the date...",
+            )
+        st.markdown(printCostumTitleAndContenth2(f'Date {selectdate}',''), unsafe_allow_html=True)
+        st.markdown(printCostumTitleAndContenth3('Growth Traits','' ),unsafe_allow_html=True)
+
+        df = pd.read_csv(f'Dataset/Aqua/AquaSammury.csv')
+        col1 , col2 = st.columns(2)
+        with col1:
+            df = df.query(f"Date == '{selectdate}'")
+            st.write("High Value Trait")
+            max_weight = 2  # Maximum weight in KG
+            print(df['WEIGHT (kg)'])
+            current_weight = df['WEIGHT (kg)'].mean()  # Current weight in KG
+            progress_html = animated_circular_progress_bar('WEIGHT (kg)', current_weight, max_weight,
+                                                           color='green',
+                                                           max_size=200)
+            st.components.v1.html(progress_html, height=210)
+
+        with col2:
+            df = df.query(f"Date == '{selectdate}'")
+            st.write("High Value Trait")
+            max_weight = 57.80  # Maximum weight in KG
+            current_weight = df['LENGTH (cm)'].mean()  # Current weight in KG
+            progress_html = animated_circular_progress_bar('LENGTH (cm)', current_weight, max_weight,
+                                                           color='green',
+                                                           max_size=200)
+            st.components.v1.html(progress_html, height=210)
