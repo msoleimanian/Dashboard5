@@ -149,9 +149,6 @@ def exploreConstructor():
 
     # Display the animated line using HTML
 
-
-    st.markdown(printCostumTitleAndContenth2('Select the Fram', ''), unsafe_allow_html=True)
-
     option2 = option_menu(None, ["Pak choy", "Rice", "Aqua"],
                           menu_icon="forward", default_index=0, orientation="horizontal",
                           styles={
@@ -419,7 +416,7 @@ def exploreConstructor():
                                                  ""),
                     unsafe_allow_html=True)
 
-        st.markdown(printCostumTitleAndContenth3(f"Generaion{option}", ""), unsafe_allow_html=True)
+        st.markdown(printCostumTitleAndContenth3(f"Generation{option}", ""), unsafe_allow_html=True)
         col1, col2, col3 = st.columns(3)
 
 
