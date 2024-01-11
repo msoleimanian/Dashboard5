@@ -154,7 +154,6 @@ def RecommendationConstructor():
 
     # Display the animated line using HTML
 
-    st.markdown(printCostumTitleAndContenth2('Select the Fram', ''), unsafe_allow_html=True)
     selectfarm = option_menu(None, ["Pak choy", "Rice", "Aqua"],
                           menu_icon="forward", default_index=0, orientation="horizontal",
                           styles={
@@ -244,7 +243,7 @@ def RecommendationConstructor():
         
             <div style="background-color:#f4f4f4;padding:20px;border-radius:10px">
         
-            <h1 style="color: #000; text-align: center;">Recommendation</h1>
+            <h1 style="color: #000; text-align: center;"></h1>
             <h5> </h5>
             <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
                 <tr>
