@@ -213,9 +213,6 @@ def RecommendationConstructor():
                 values = random.randint(25,31)
                 print(values)
                 percentage = round(((((37 - values) / 37)) * 100),2)
-                st.markdown(printCostumTitleAndContenth3("Yield Predicted",
-                                                         f"Predicted Average Weight Grain for Season{optionSeason} at D90: {values} gram (% {percentage} lower than the best, Best weight grain is 37 gram.)"),
-                            unsafe_allow_html=True)
                 risk = ""
                 color = ""
                 if percentage<20:
@@ -227,11 +224,25 @@ def RecommendationConstructor():
                 else:
                     risk = "High Risk"
                     color = "red"
-                st.markdown(printCustomTitleAndContentrisk("Risk Level",
-                                                         f"{risk}", color),
-                            unsafe_allow_html=True)
+                col1, col2 = st.columns(2)
+                with col1:
+                    html_content = f"""
+                        <div style="border: 2px solid #333333; padding:10px; border-radius:5px;">
+                                            <h3 style="color:#333333;">Yield Report</h3>
+                                            <p style="color:{color};">Predicted Average Weight Grain for Season{optionSeason} at D90: {values} gram (% {percentage} lower than the best, Best weight grain is 37 gram.)</p>
+                                        </div>
+                                    """
+                    st.markdown(html_content, unsafe_allow_html=True)
 
+                with col2:
+                    html_content = f"""
+    <div style="border: 2px solid #333333; padding:10px; border-radius:5px;">
+                        <h3 style="color:#333333;">Yield Risk Predicted:</h3>
+                        <p style="color:{color};">{risk}</p>
+                    </div>
+                """
 
+                    st.markdown(html_content, unsafe_allow_html=True)
                 return benchmark , selected
             else:
                 print('No data found for the specified season and plot combination.')
@@ -241,19 +252,16 @@ def RecommendationConstructor():
         benchmark, sel = compare_nutrient_levels(season2=int(optionSeason), day1=int(optionDay) , day2=int(optionDay), plot2=int(optionPlot), season1=2, plot1=5)
         html = f"""
         
-            <div style="background-color:#f4f4f4;padding:20px;border-radius:10px">
-        
-            <h1 style="color: #000; text-align: center;"></h1>
-            <h5> </h5>
-            <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
+            <div style="border: 2px solid #333333; padding:10px; border-radius:5px;">
+                    <h3 style="color:#333333;">Suggestions</h3>
+                    <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
                 <tr>
                     <th style="border: 2px solid #000; padding: 10px;"></th>
                     <th style="border: 2px solid #000; padding: 10px;">N</th>
                     <th style="border: 2px solid #000; padding: 10px;">K</th>
                     <th style="border: 2px solid #000; padding: 10px;">P</th>
                     <th style="border: 2px solid #000; padding: 10px;">Mg</th>
-                    <th style="border: 2px solid #000; padding: 10px;">Ca</th>
-                    
+                    <th style="border: 2px solid #000; padding: 10px;">Ca</th>    
             <tr>
             <td style='border: 2px solid #000; padding: 10px;'>Best Performance(Season2 Plot2)</td>
             <td style='border: 2px solid #000; padding: 10px;'>{benchmark['N'].mean().round(2)}</td>
@@ -285,8 +293,49 @@ def RecommendationConstructor():
             </table>
             </div>
         """
-
+        st.write("")
         st.markdown(html, unsafe_allow_html=True)
+
+        html_content_with_border = f"""
+            <div style="border: 2px solid #333333; padding:10px; border-radius:5px;">
+                <div style="border: 2px solid #333333; padding:10px; border-radius:5px;">
+                <h3 style="color:#333333;">Yield Report</h3>
+                <p style="color:green;">Predicted Average Weight Grain for Season{optionSeason} at D90: 33 gram after Aplly the Intervention plan (% 4 lower than the best, Best weight grain is 37 gram.)</p>
+                <table style="border-collapse: collapse; width: 100%;">
+                </div>
+                <h3>Crop Traits</h3>
+                <table style="border-collapse: collapse; width: 100%;">
+    <tr style="border: 1px solid #dddddd; text-align: left; padding: 8px;">
+        <th style="border: 1px solid #dddddd; padding: 8px;">Season</th>
+        <th style="border: 1px solid #dddddd; padding: 8px;">Plot Number</th>
+        <th style="border: 1px solid #dddddd; padding: 8px;">Plant Height</th>
+        <th style="border: 1px solid #dddddd; padding: 8px;">No. of Tiller</th>
+        <th style="border: 1px solid #dddddd; padding: 8px;">No. of Panicle</th>
+        <th style="border: 1px solid #dddddd; padding: 8px;">No. of Spikelet</th>
+        <th style="border: 1px solid #dddddd; padding: 8px;">No. of Filled Grain</th>
+        <th style="border: 1px solid #dddddd; padding: 8px;">No. Of Unfilled Grain</th>
+        <th style="border: 1px solid #dddddd; padding: 8px;">Weight Grain (1000 grains)</th>
+    </tr>
+    <tr style="border: 1px solid #dddddd; text-align: left; padding: 8px;">
+        <td style="border: 1px solid #dddddd; padding: 8px;">{optionSeason}</td>
+        <td style="border: 1px solid #dddddd; padding: 8px;">{optionPlot}</td>
+        <td style="border: 1px solid #dddddd; padding: 8px;">98.51</td>
+        <td style="border: 1px solid #dddddd; padding: 8px;">6</td>
+        <td style="border: 1px solid #dddddd; padding: 8px;">5</td>
+        <td style="border: 1px solid #dddddd; padding: 8px;">42</td>
+        <td style="border: 1px solid #dddddd; padding: 8px;">195</td>
+        <td style="border: 1px solid #dddddd; padding: 8px;">154</td>
+        <td style="border: 1px solid #dddddd; padding: 8px;">33</td>
+    </tr>
+</table>
+            </div>
+        """
+        st.write("")
+        col1, col2, col3 = st.columns(3)
+        if col2.button("Apply Intervention plan"):
+            st.markdown(html_content_with_border, unsafe_allow_html=True)
+
+
 
     if selectfarm =="Aqua":
         st.header('')
