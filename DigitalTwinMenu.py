@@ -6,9 +6,9 @@ import Recommendation as recommendation
 
 def constructoemain():
 
-    selected = option_menu(None, ["Digital Twin", "Monitoring", "Recommendation"],
+    selected = option_menu(None, ["Virtual model", "Monitoring", "Recommendation"],
         menu_icon="cast", default_index=0, orientation="horizontal")
-    if selected == "Digital Twin":
+    if selected == "Virtual model":
         digitaltwin.digitaltwinconstructor()
 
 
