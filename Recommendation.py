@@ -339,3 +339,214 @@ def RecommendationConstructor():
 
     if selectfarm =="Aqua":
         st.header('')
+
+    if selectfarm =="Pak choy":
+        st.markdown(printCostumTitleAndContenth1("Nutrient recovery recommendation", ""), unsafe_allow_html=True)
+
+        html_content = f"""
+                                <h3 style="color:#333333;">Current Plantation</h3>
+                                <table style="border-collapse: collapse; width: 100%;">
+    <tr style="border: 1px solid #dddddd; text-align: left; padding: 8px;">
+        <th style="border: 1px solid #dddddd; padding: 8px;">Generation</th>
+        <th style="border: 1px solid #dddddd; padding: 8px;">Pot number</th>
+        <th style="border: 1px solid #dddddd; padding: 8px;">Current Plant Height(mm)</th>
+        <th style="border: 1px solid #dddddd; padding: 8px;">Current Leaves Count(mm)</th>
+        <th style="border: 1px solid #dddddd; padding: 8px;">Current Longest Leaf(mm)</th>
+        <th style="border: 1px solid #dddddd; padding: 8px;">Predicted Plant Height(mm)</th>
+        <th style="border: 1px solid #dddddd; padding: 8px;">Predicted Leaves Count(mm)</th>
+        <th style="border: 1px solid #dddddd; padding: 8px;">Predicted Longest Leaf(mm)</th>
+        <th style="border: 1px solid #dddddd; padding: 8px;">Time Line(week)</th>
+        <th style="border: 1px solid #dddddd; padding: 8px;">Estimated Harvest Weight(gram)</th>
+    </tr>
+    <tr style="border: 1px solid #dddddd; text-align: left; padding: 8px;">
+        <th style="border: 1px solid #dddddd; padding: 8px;">3</th>
+        <th style="border: 1px solid #dddddd; padding: 8px;">1</th>
+        <th style="border: 1px solid #dddddd; padding: 8px;">130</th>
+        <th style="border: 1px solid #dddddd; padding: 8px;">5</th>
+        <th style="border: 1px solid #dddddd; padding: 8px;">80</th>
+        <th style="border: 1px solid #dddddd; padding: 8px;">260</th>
+        <th style="border: 1px solid #dddddd; padding: 8px;">11</th>
+        <th style="border: 1px solid #dddddd; padding: 8px;">170</th>
+        <th style="border: 1px solid #dddddd; padding: 8px;">2/4</th>
+        <th style="border: 1px solid #dddddd; padding: 8px;">670</th>
+    </tr>
+    <tr style="border: 1px solid #dddddd; text-align: left; padding: 8px;">
+        <th style="border: 1px solid #dddddd; padding: 8px;">3</th>
+        <th style="border: 1px solid #dddddd; padding: 8px;">2</th>
+        <th style="border: 1px solid #dddddd; padding: 8px;">145</th>
+        <th style="border: 1px solid #dddddd; padding: 8px;">6</th>
+        <th style="border: 1px solid #dddddd; padding: 8px;">90</th>
+        <th style="border: 1px solid #dddddd; padding: 8px;">240</th>
+        <th style="border: 1px solid #dddddd; padding: 8px;">10</th>
+        <th style="border: 1px solid #dddddd; padding: 8px;">130</th>
+        <th style="border: 1px solid #dddddd; padding: 8px;">2/4</th>
+        <th style="border: 1px solid #dddddd; padding: 8px;">690</th>
+    </tr>
+    <tr style="border: 1px solid #dddddd; text-align: left; padding: 8px;">
+        <th style="border: 1px solid #dddddd; padding: 8px;">4</th>
+        <th style="border: 1px solid #dddddd; padding: 8px;">1</th>
+        <th style="border: 1px solid #dddddd; padding: 8px;">125</th>
+        <th style="border: 1px solid #dddddd; padding: 8px;">4</th>
+        <th style="border: 1px solid #dddddd; padding: 8px;">40</th>
+        <th style="border: 1px solid #dddddd; padding: 8px;">210</th>
+        <th style="border: 1px solid #dddddd; padding: 8px;">11</th>
+        <th style="border: 1px solid #dddddd; padding: 8px;">90</th>
+        <th style="border: 1px solid #dddddd; padding: 8px;">1/4</th>
+        <th style="border: 1px solid #dddddd; padding: 8px;">890</th>
+    </tr>
+    <tr style="border: 1px solid #dddddd; text-align: left; padding: 8px;">
+        <th style="border: 1px solid #dddddd; padding: 8px;">4</th>
+        <th style="border: 1px solid #dddddd; padding: 8px;">2</th>
+        <th style="border: 1px solid #dddddd; padding: 8px;">95</th>
+        <th style="border: 1px solid #dddddd; padding: 8px;">5</th>
+        <th style="border: 1px solid #dddddd; padding: 8px;">65</th>
+        <th style="border: 1px solid #dddddd; padding: 8px;">230</th>
+        <th style="border: 1px solid #dddddd; padding: 8px;">13</th>
+        <th style="border: 1px solid #dddddd; padding: 8px;">110</th>
+        <th style="border: 1px solid #dddddd; padding: 8px;">1/4</th>
+        <th style="border: 1px solid #dddddd; padding: 8px;">900</th>
+    </tr>
+</table>    
+                            </div>
+                        """
+
+        st.markdown(html_content, unsafe_allow_html=True)
+        col1, col2, col3 = st.columns(3)
+        with col1:
+            generation = st.selectbox('Select the current generation' , ('Generation 3', 'Generation 4'))
+
+        with col2:
+            pot = st.selectbox('Select the Pot', ('Pot 1', 'Pot 2'))
+
+        col11, col22 = st.columns(2)
+        data = {'Generation 3':{'Pot 1': 670,  'Pot 2': 690} , 'Generation 4':{'Pot 1':890 ,  'Pot 2':900}}
+        percentage = round(((((1100 - data[generation][pot]) / 1100)) * 100), 2)
+        risk = ""
+        color = ""
+        if percentage < 20:
+            risk = "No Risk"
+            color = "green"
+        elif (percentage <= 25):
+            risk = "Low Risk"
+            color = "orange"
+        else:
+            risk = "High Risk"
+            color = "red"
+
+        with col11:
+            html_content = f"""
+                                <div style="border: 2px solid #333333; padding:10px; border-radius:5px;">
+                                                    <h3 style="color:#333333;">Yield Report</h3>
+                                                    <p style="color:{color};">Predicted Average Weight for Generation{generation} at Week4: {data[generation][pot]} gram (% {percentage} lower than the best, Best weight grain is 37 gram.)</p>
+                                                </div>
+                                            """
+            st.markdown(html_content, unsafe_allow_html=True)
+
+        with col22:
+            html_content = f"""
+            <div style="border: 2px solid #333333; padding:10px; border-radius:5px;">
+                                <h3 style="color:#333333;">Yield Risk Predicted:</h3>
+                                <p style="color:{color};">{risk}</p>
+                            </div>
+                        """
+            st.markdown(html_content, unsafe_allow_html=True)
+
+        benchmark = {'Temperature' : 24, 'Salinity' :5 , 'TDS':12 , 'Orp' :22 ,'Sr':7, 'EC' : 13, 'pH':6}
+        dataset = {
+            'Generation 3': {
+                'Pot 1': {"Temperature": 25.5, "Salinity": 35, "TDS": 400, "Orp": 200, "Sr": 10, "pH": 7.2 , 'EC' : 13 },
+                'Pot 2': {"Temperature": 24.8, "Salinity": 34, "TDS": 390, "Orp": 210, "Sr": 12, "pH": 7.5 , 'EC' : 13}
+            },
+            'Generation 4': {
+                'Pot 1': {"Temperature": 26.2, "Salinity": 36, "TDS": 410, "Orp": 195, "Sr": 9, "pH": 7.0 , 'EC' : 13},
+                'Pot 2': {"Temperature": 25.7, "Salinity": 35.5, "TDS": 405, "Orp": 205, "Sr": 11, "pH": 7.3 , 'EC' : 13}
+            }
+        }
+        html = f"""
+
+                    <div style="border: 2px solid #333333; padding:10px; border-radius:5px;">
+                            <h3 style="color:#333333;">Suggestions</h3>
+                            <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
+                        <tr>
+                            <th style="border: 2px solid #000; padding: 10px;"></th>
+                            <th style="border: 2px solid #000; padding: 10px;">Temperature</th>
+                            <th style="border: 2px solid #000; padding: 10px;">Salinity</th>
+                            <th style="border: 2px solid #000; padding: 10px;">TDS</th>
+                            <th style="border: 2px solid #000; padding: 10px;">Orp</th>
+                            <th style="border: 2px solid #000; padding: 10px;">Sr</th>    
+                            <th style="border: 2px solid #000; padding: 10px;">EC</th>    
+                            <th style="border: 2px solid #000; padding: 10px;">pH</th>    
+                    <tr>
+                    <td style='border: 2px solid #000; padding: 10px;'>Benchmark</td>
+                    <td style='border: 2px solid #000; padding: 10px;'>{benchmark['Temperature']}</td>
+                    <td style='border: 2px solid #000; padding: 10px;'>{benchmark['Salinity']}</td>
+                    <td style='border: 2px solid #000; padding: 10px;'>{benchmark['TDS']}</td>
+                    <td style='border: 2px solid #000; padding: 10px;'>{benchmark['Orp']}</td>
+                    <td style='border: 2px solid #000; padding: 10px;'>{benchmark['Sr']}</td>
+                    <td style='border: 2px solid #000; padding: 10px;'>{benchmark['EC']}</td>
+                    <td style='border: 2px solid #000; padding: 10px;'>{benchmark['pH']}</td>
+
+                    </tr>
+
+                    <tr>
+                    <td style='border: 2px solid #000; padding: 10px;'>Current {generation} and {pot}</td>
+                    <td style='border: 2px solid #000; padding: 10px;'>{dataset[generation][pot]['Temperature']}</td>
+                    <td style='border: 2px solid #000; padding: 10px;'>{dataset[generation][pot]['Salinity']}</td>
+                    <td style='border: 2px solid #000; padding: 10px;'>{dataset[generation][pot]['TDS']}</td>
+                    <td style='border: 2px solid #000; padding: 10px;'>{dataset[generation][pot]['Orp']}</td>
+                    <td style='border: 2px solid #000; padding: 10px;'>{dataset[generation][pot]['Sr']}</td>
+                    <td style='border: 2px solid #000; padding: 10px;'>{dataset[generation][pot]['EC']}</td>
+                    <td style='border: 2px solid #000; padding: 10px;'>{dataset[generation][pot]['pH']}</td>
+
+                    </tr>
+
+
+                    <tr><td style='border: 2px solid #000; padding: 10px;'>Intervention plan</td>
+                    <td style='border: 2px solid #000; padding: 10px;'>{round(benchmark['Temperature'] - dataset[generation][pot]['Temperature'] , 2)}</td>
+                    <td style='border: 2px solid #000; padding: 10px;'>{benchmark['Salinity'] - dataset[generation][pot]['Salinity']}</td>
+                    <td style='border: 2px solid #000; padding: 10px;'>{benchmark['TDS'] - dataset[generation][pot]['TDS']}</td>
+                    <td style='border: 2px solid #000; padding: 10px;'>{benchmark['Orp'] - dataset[generation][pot]['Orp']}</td>
+                    <td style='border: 2px solid #000; padding: 10px;'>{benchmark['Sr'] - dataset[generation][pot]['Sr']}</td>
+                    <td style='border: 2px solid #000; padding: 10px;'>{benchmark['EC'] - dataset[generation][pot]['EC']}</td>
+                    <td style='border: 2px solid #000; padding: 10px;'>{round(benchmark['pH'] - dataset[generation][pot]['pH'],2)}</td>
+                    </tr>
+                    </table>
+                    </div>
+                """
+        st.write("")
+        st.markdown(html, unsafe_allow_html=True)
+
+        st.write('')
+
+        html_content_with_border = f"""
+                    <div style="border: 2px solid #333333; padding:10px; border-radius:5px;">
+                        <div style="border: 2px solid #333333; padding:10px; border-radius:5px;">
+                        <h3 style="color:#333333;">Yield Report</h3>
+                        <p style="color:green;">Predicted Average Weight Grain for {generation} at week 4: 1011 gram after Aplly the Intervention plan (% 4 lower than the best, Best weight grain is 1100 gram.)</p>
+                        <table style="border-collapse: collapse; width: 100%;">
+                        </div>
+                        <h3>Crop Traits</h3>
+                        <table style="border-collapse: collapse; width: 100%;">
+    <tr style="border: 1px solid #dddddd; text-align: left; padding: 8px;">
+        <th style="border: 1px solid #dddddd; padding: 8px;">Generation</th>
+        <th style="border: 1px solid #dddddd; padding: 8px;">Pot number</th>
+        <th style="border: 1px solid #dddddd; padding: 8px;">Predicted Plant Height(mm)</th>
+        <th style="border: 1px solid #dddddd; padding: 8px;">Predicted Leaves Count(mm)</th>
+        <th style="border: 1px solid #dddddd; padding: 8px;">Predicted Longest Leaf(mm)</th>
+        <th style="border: 1px solid #dddddd; padding: 8px;">Estimated Harvest Weight(gram)</th>
+    </tr>
+    <tr style="border: 1px solid #dddddd; text-align: left; padding: 8px;">
+        <th style="border: 1px solid #dddddd; padding: 8px;">{generation}</th>
+        <th style="border: 1px solid #dddddd; padding: 8px;">{pot}</th>
+        <th style="border: 1px solid #dddddd; padding: 8px;">283</th>
+        <th style="border: 1px solid #dddddd; padding: 8px;">12</th>
+        <th style="border: 1px solid #dddddd; padding: 8px;">184</th>
+        <th style="border: 1px solid #dddddd; padding: 8px;">1011</th>
+    </tr>
+                    </div>
+                """
+
+
+        col1, col2, col3 = st.columns(3)
+        if col2.button("Apply Intervention plan"):
+            st.markdown(html_content_with_border, unsafe_allow_html=True)

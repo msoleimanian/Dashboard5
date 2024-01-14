@@ -31,17 +31,6 @@ def summaryConstructor():
             """
 
 
-    def printCostumTitleAndContenth1(title, context):
-        return f"""
-            <div class="jumbotron">
-            <h1>{title}</h1>
-            <h5>{context}</h5>
-            </div>
-            <div class="container">
-            </div>
-            """
-
-
     def animated_linear_progress_bar(label, value, color='green'):
         progress_html = f"""
             <svg width="300" height="30" style="background-color: #f1f1f1; border-radius: 5px;">
@@ -928,3 +917,5 @@ def summaryConstructor():
                                                                color='green',
                                                                max_size=200)
                 st.components.v1.html(progress_html, height=210)
+
+

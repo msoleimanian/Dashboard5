@@ -47,9 +47,9 @@ def digitaltwinconstructor():
                               "nav-link-selected": {"background-color": "green"},
                           }
                           )
-    st.markdown(printCostumTitleAndContenth1("Explore", ""), unsafe_allow_html=True)
 
-    if option2 == "Pack choy v.1":
+
+    if option2 == "Pak choy v.1":
         st.markdown(printCostumTitleAndContenth1('3D Represent of the Pack Choy Farm ',''), unsafe_allow_html=True)
         # Replace 'your_embed_code' with the actual embed code of your Sketchfab model
         embed_code = """
@@ -230,7 +230,22 @@ def digitaltwinconstructor():
         # Embed the Sketchfab model using an iframe
         st.components.v1.iframe(model_url, width=900, height=500)
 
-    if option2 == "Pack choy v.2":
+    if option2 == "Pak choy v.2":
+        html_content = f"""
+                                            <div style="border: 2px solid #333333; padding:10px; border-radius:5px;">
+                                                                <h3 style="color:#333333;">Digital Twin</h3>
+                                                                <p>Here system present the 3D version of the Green House. Select the Generation.</p>
+                                                                <p>Week: 2 / 4 </p>
+
+                                                        """
+
+        st.markdown(html_content, unsafe_allow_html=True)
+        col1, col2, col3 = st.columns(3)
+        with col1:
+            generation = st.selectbox('Select the current generation', (3, 4))
+        with col2:
+            pot = st.selectbox('Select the Pot', (1, 2))
+
         import plotly.graph_objects as go
         import pandas as pd
         import numpy as np
@@ -271,7 +286,9 @@ def digitaltwinconstructor():
                                                    mode='lines',
                                                    line=dict(color='green', width=3),
                                                    name=f'Plant {plant_counter}',
-                                                   customdata=[plant_counter, leaf_count, plant_height]))
+                                                   customdata=[plant_counter, leaf_count, plant_height],
+                                                   hoverinfo='name+x+y+z+text'
+                                                   ))
 
                         # Draw plant head (scatter3d markers)
                         fig.add_trace(go.Scatter3d(x=[j + 0.5],
@@ -280,7 +297,9 @@ def digitaltwinconstructor():
                                                    mode='markers',
                                                    marker=dict(size=leaf_count, color='green'),
                                                    name=f'Plant {plant_counter}',
-                                                   customdata=[plant_counter, leaf_count, plant_height]))
+                                                   customdata=[plant_counter, leaf_count, plant_height],
+                                                   hoverinfo='name+x+y+z+text'
+                                                   ))
 
                         plant_counter += 1
 
@@ -298,7 +317,9 @@ def digitaltwinconstructor():
                                                    mode='lines',
                                                    line=dict(color='green', width=3),
                                                    name=f'Plant {plant_counter}',
-                                                   customdata=[plant_counter, leaf_count, plant_height]))
+                                                   customdata=[plant_counter, leaf_count, plant_height],
+                                                   hoverinfo='name+x+y+z+text'
+                                                   ))
 
                         # Draw plant head (scatter3d markers) for the second set
                         fig.add_trace(go.Scatter3d(x=[j + 10.5],
@@ -307,7 +328,9 @@ def digitaltwinconstructor():
                                                    mode='markers',
                                                    marker=dict(size=leaf_count, color='green'),
                                                    name=f'Plant {plant_counter}',
-                                                   customdata=[plant_counter, leaf_count, plant_height]))
+                                                   customdata=[plant_counter, leaf_count, plant_height],
+                                                   hoverinfo='name+x+y+z+text'
+                                                   ))
 
                         plant_counter += 1
 
@@ -320,7 +343,6 @@ def digitaltwinconstructor():
             return fig
 
         # Streamlit UI
-        st.title("Greenhouse 3D Layout")
 
         # Read plant heights and leaf counts from greenhouse_data.csv
         csv_file = "Dataset/Pock choy /greenhouse_data.csv"
@@ -333,7 +355,7 @@ def digitaltwinconstructor():
         greenhouse_layout = create_greenhouse_layout(rows, cols)
 
         # Checkboxes to represent plants in the greenhouse
-        st.write("Select the cells to place plants in the greenhouse:")
+        st.write("")
         for i in range(rows):
             for j in range(cols):
                 greenhouse_layout[i, j] = 1
@@ -344,7 +366,7 @@ def digitaltwinconstructor():
                                      xaxis=dict(showgrid=False),
                                      yaxis=dict(showgrid=False),
                                      zaxis=dict(showgrid=False)),
-                          title='Greenhouse 3D Layout',
+                          title=f'Generation {generation} 3D Layout',
                           width=800,
                           height=800
                           )
@@ -355,13 +377,30 @@ def digitaltwinconstructor():
         # Handle click events
         scatter = next(fig.select_traces(selector=dict(type='scatter3d')))
         points_data = scatter['customdata']
-
+        print(points_data)
         # Check if a point is clicked
-        if st.button("Show Info"):
-            point_clicked = st.selectbox("Select Plant:", [f"Plant {i}" for i in range(1, len(points_data) + 1)])
-            plant_number = int(point_clicked.split()[-1])
-            leaf_count, plant_height = points_data[plant_number - 1][1:]
-            st.write(f"Plant {plant_number} - Leaf Count: {leaf_count}, Plant Height: {plant_height}")
 
+        headers = ["PlantID" ,"generation", "pot", "subpot", "leaves count", "longest leaf", "plant height" ]
+
+        # Create a list to hold the data
+        data = []
+
+        # Generate data for 40 plants
+        Plantcount = 1
+        generation = 3
+        for pot in range(1, 3):
+            for subpot in range(1, 41):
+                leaves_count = 10 + subpot  # Example logic for leaves count
+                longest_leaf = 5.0 + 0.1 * subpot  # Example logic for longest leaf
+                plant_height = 20.0 + 0.5 * subpot  # Example logic for plant height
+
+                # Append data for each plant
+                data.append([Plantcount , generation, pot, subpot, leaves_count, longest_leaf, plant_height])
+                Plantcount = Plantcount + 1
+        # Create a DataFrame
+        df = pd.DataFrame(data, columns=headers)
+
+        # Display DataFrame as an HTML table using Streamlit
+        st.write(df.to_html(index=False, escape=False), unsafe_allow_html=True)
 
 

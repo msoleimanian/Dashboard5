@@ -7,7 +7,6 @@ import DigitalTwinMenu as digitialtwin
 import Summary as summary
 import Recommendation as recom
 
-st.set_page_config(layout="wide")
 
 def menuconstructor():
     # 1. as sidebar menu
