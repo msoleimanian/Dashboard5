@@ -698,14 +698,37 @@ def MonitoringConstructor():
             st.plotly_chart(fig_Do,use_container_width=True ,height=20)
         with col5:
             st.plotly_chart(fig_Salinity,use_container_width=True ,height=20)
-        options = st.selectbox(
-            'Select the option',
-            ('Temperature', 'pH', 'Ammonia', 'DO','Salinity'))
 
-        fieldname2 = { 'Temperature':1, 'pH':2, 'Ammonia' :3 ,'DO':4, 'Salinity':5}
-        print(get_field_datas(fieldname2[options]))
-        df = get_field_datas(fieldname2[options])
-        p = px.line(df, x='time', y='value', title=options)
+        html_content = f"""
+                            <div style="border: 2px solid #333333; padding:10px; border-radius:5px;">
+                                                <h3 style="color:#333333;">Query</h3>
+                                                <p>You can see the trend of the metric base on the date that you can select.</p>
+                                            </div>
+                                        """
+        st.markdown(html_content, unsafe_allow_html=True)
+
+        col_1, col_2, col_3 = st.columns(3)
+        df = pd.DataFrame()
+        with col_1:
+            options = st.selectbox(
+                'Select the option',
+                ('Temperature', 'pH', 'Ammonia', 'DO','Salinity'))
+
+            fieldname2 = { 'Temperature':1, 'pH':2, 'Ammonia' :3 ,'DO':4, 'Salinity':5}
+            print(get_field_datas(fieldname2[options]))
+            df = get_field_datas(fieldname2[options])
+        with col_2:
+            startDate = st.selectbox(
+                'Select the Start Date',
+                (df['time'])
+            )
+        with col_3:
+            endDate = st.selectbox(
+                'Select the End Date',
+                (df['time'])
+            )
+        mask = (df['time'] > startDate) & (df['time'] <= endDate)
+        p = px.line(df.loc[mask], x='time', y='value', title=options)
         st.plotly_chart(p)
 
     if option2 == "Pak choy":
@@ -854,11 +877,31 @@ def MonitoringConstructor():
             st.plotly_chart(fig_Salinity, use_container_width=True, height=500)
         with col7:
             st.plotly_chart(fig_Temperature, use_container_width=True, height=500)
+        html_content = f"""
+                    <div style="border: 2px solid #333333; padding:10px; border-radius:5px;">
+                                        <h3 style="color:#333333;">Query</h3>
+                                        <p>You can see the trend of the metric base on the date that you can select.</p>
+                                    </div>
+                                """
+        st.markdown(html_content, unsafe_allow_html=True)
 
-        options = st.selectbox(
-            'Select the option',
-            ('waterTemperature', 'waterPh', 'waterSr', 'waterOrp', 'waterTds', 'waterSalinity'))
-        df = getPakChoyData(options)
-        print(df)
-        p = px.line(df, x='time', y='value', title=options)
+        col_1 ,col_2, col_3 = st.columns(3)
+        df = pd.DataFrame()
+        with col_1:
+            optionsnutrient = st.selectbox(
+                'Select the metric',
+                ('waterTemperature', 'waterPh', 'waterSr', 'waterOrp', 'waterTds', 'waterSalinity'))
+            df = getPakChoyData(optionsnutrient)
+        with col_2:
+            startDate = st.selectbox(
+                'Select the Start Date',
+                (df['time'])
+            )
+        with col_3:
+            endDate = st.selectbox(
+                'Select the End Date',
+                (df['time'])
+            )
+        mask = (df['time'] > startDate) & (df['time'] <= endDate)
+        p = px.line(df.loc[mask], x='time', y='value', title=optionsnutrient)
         st.plotly_chart(p)
