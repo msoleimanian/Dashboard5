@@ -412,7 +412,7 @@ def exploreConstructor():
             )
 
         df = pd.read_csv(f'Dataset/Pock choy /generation.csv')
-        st.markdown(printCostumTitleAndContenth3(f"Pakc choy Traits",
+        st.markdown(printCostumTitleAndContenth3(f"Pak choy Traits",
                                                  ""),
                     unsafe_allow_html=True)
 

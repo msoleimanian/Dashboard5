@@ -37,7 +37,7 @@ def printCostumTitleAndContenth1(title, context):
 
 
 def digitaltwinconstructor():
-    option2 = option_menu(None, ["Pack choy v.1" , "Pack choy v.2", "Rice", "Aqua"],
+    option2 = option_menu(None, ["Pak choy v.1" , "Pak choy v.2", "Rice", "Aqua"],
                           menu_icon="forward", default_index=0, orientation="horizontal",
                           styles={
                               "container": {"padding": "0!important", "background-color": "#fafafa"},
