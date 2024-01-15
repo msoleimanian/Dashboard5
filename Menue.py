@@ -6,6 +6,7 @@ import HistoricalAnalyzeMenu as historical
 import DigitalTwinMenu as digitialtwin
 import Summary as summary
 import Recommendation as recom
+import Home as home
 
 
 def menuconstructor():
@@ -20,6 +21,8 @@ def menuconstructor():
     if select == "Digital Twin":
         digitialtwin.constructoemain()
 
+    if select == 'Home':
+        home.homepageconstructor()
 
 
 if __name__ == '__main__':
