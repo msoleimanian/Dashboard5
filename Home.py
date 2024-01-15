@@ -4,7 +4,7 @@ def homepageconstructor():
 
     html_content = f"""
                                     <div style="border: 2px solid #333333; padding:10px; border-radius:5px;">
-                                                        <h3 style="color:#333333;">What does the system do??</h3>
+                                                        <h3 style="color:#333333;">What does the system do?</h3>
                                                         <p>Welcome to the Home page of our innovative system, designed to revolutionize the way you manage and analyze your agricultural operations. Our system comprises two main menus, each offering a distinct view into the world of smart farming: Historical Analyses and Digital Twin.</p>
                                                     </div>
                                                 """
