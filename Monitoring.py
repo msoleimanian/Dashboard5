@@ -861,8 +861,9 @@ def MonitoringConstructor():
                                                             <p>You can see the level of the nutrients at {data.iloc[0]['time']}</p>
                                                         </div>
                                                     """
+
         st.markdown(html_content, unsafe_allow_html=True)
-        col1, col2, col3, col4, col5, col6, col7 = st.columns(7)
+        col1, col2, col3, col4, col5 = st.columns(5)
         with col1:
             st.plotly_chart(fig_ph, use_container_width=True, height=500)
         with col2:
@@ -873,9 +874,10 @@ def MonitoringConstructor():
             st.plotly_chart(fig_orp, use_container_width=True, height=500)
         with col5:
             st.plotly_chart(fig_tds, use_container_width=True, height=500)
-        with col6:
+        col1, col2, col3, col4, col5 = st.columns(5)
+        with col2:
             st.plotly_chart(fig_Salinity, use_container_width=True, height=500)
-        with col7:
+        with col3:
             st.plotly_chart(fig_Temperature, use_container_width=True, height=500)
         html_content = f"""
                     <div style="border: 2px solid #333333; padding:10px; border-radius:5px;">
