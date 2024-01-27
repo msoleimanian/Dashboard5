@@ -1,7 +1,7 @@
 import streamlit as st
 import streamlit.components.v1 as components
 from streamlit_option_menu import option_menu
-
+import pandas as pd
 
 def printCostumTitleAndContenth3(title, context):
     return f"""
@@ -12,6 +12,39 @@ def printCostumTitleAndContenth3(title, context):
         <div class="container">
         </div>
         """
+
+def printWithTitleAndBoarder(title, context):
+    return f"""
+        <div style="border: 2px solid #333333; padding:10px; border-radius:5px;">
+            <h3 style="color:#333333;">{title}</h3>
+            <h5>{context}</h5>
+            <table>
+                    <tr>
+                        <th>Pot Number</th>
+                        <th>Crop Health Status</th>
+                    </tr>
+                    <tr>
+                        <td>1</td>
+                        <td>good</td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td>normal</td>
+                    </tr>
+            </table>
+        </div>
+        """
+
+
+
+def printWithTitleAndBoarder1(title, context):
+    return f"""
+        <div style="border: 2px solid #333333; padding:10px; border-radius:5px;">
+            <h3 style="color:#333333;">{title}</h3>
+            <h5>{context}</h5>
+        </div>
+        """
+
 
 
 def printCostumTitleAndContenth2(title, context):
@@ -37,7 +70,8 @@ def printCostumTitleAndContenth1(title, context):
 
 
 def digitaltwinconstructor():
-    option2 = option_menu(None, ["Pak choy v.1" , "Pak choy v.2", "Rice", "Aqua"],
+
+    option2 = option_menu(None, ["Pak choy", "Rice", "Aqua"],
                           menu_icon="forward", default_index=0, orientation="horizontal",
                           styles={
                               "container": {"padding": "0!important", "background-color": "#fafafa"},
@@ -48,359 +82,273 @@ def digitaltwinconstructor():
                           }
                           )
 
-
-    if option2 == "Pak choy v.1":
-        st.markdown(printCostumTitleAndContenth1('3D Represent of the Pack Choy Farm ',''), unsafe_allow_html=True)
-        # Replace 'your_embed_code' with the actual embed code of your Sketchfab model
-        embed_code = """
-        <iframe width="800" height="600" src="https://sketchfab.com/3d-models/hydroponic-farming-setup-1486c6b628ba44f8a5e579927f51a7f7/embed" frameborder="0" allow="autoplay; fullscreen; vr" mozallowfullscreen="true" webkitallowfullscreen="true"></iframe>
-        """
-
-        # Extract the URL from the embed code
-        model_url = embed_code.split('src="')[1].split('"')[0]
-
-        # Embed the Sketchfab model using an iframe
-        st.components.v1.iframe(model_url, width=900, height=500)
+    if option2 == "Pak choy":
+        import  pandas as pd
+        df = pd.read_csv('Dataset/Pock choy /Generation3_pot1.csv')
+        st.markdown(printWithTitleAndBoarder('Current Generation: Generation 3' , 'Farm health Status: Good - 7/10') , unsafe_allow_html=True)
+        optionpot = st.selectbox('Select the pot:' , (1 , 2 ))
+        # Your dataframe
 
 
-        st.markdown(printCostumTitleAndContenth1('3D Represent of each pot ',''), unsafe_allow_html=True)
-        st.markdown(printCostumTitleAndContenth3('Pot1', ''), unsafe_allow_html=True)
-        # Replace 'your_embed_code' with the actual embed code of your Sketchfab model
-        embed_code = """
-        <iframe width="800" height="600" src="https://sketchfab.com/3d-models/tryout-8-2f68372773374eba820713e6c3b173b2/embed" frameborder="0" allow="autoplay; fullscreen; vr" mozallowfullscreen="true" webkitallowfullscreen="true"></iframe>
-        """
+        # Replace 'Dataset/Pock choy /Generation3_pot1.csv' with the actual path to your CSV file
+        file_path = 'Dataset/Pock choy /Generation3_pot1.csv'
 
-        # Extract the URL from the embed code
-        model_url = embed_code.split('src="')[1].split('"')[0]
+        # Read the CSV file into a pandas DataFrame
+        df = pd.read_csv(file_path)
 
-        # Embed the Sketchfab model using an iframe
-        st.components.v1.iframe(model_url, width=900, height=500)
+        # Define a mapping for status to color
+        status_color_mapping = {'good': 'green', 'normal': 'orange', 'bad': 'red'}
+
+        # Create a dictionary with pot number as keys and color as values
+        pot_color_dict = {}
+        for index, row in df.iterrows():
+            pot_number = row['subpotnumber']
+            status = row['status'].lower()  # Convert to lowercase for case-insensitivity
+            color = status_color_mapping.get(status,
+                                             'unknown')  # Default to 'unknown' if status is not one of the specified values
+            pot_color_dict[pot_number] = color
+
+        print(pot_color_dict)
 
 
-        st.markdown(printCostumTitleAndContenth1('2D Represent of each pot ',''), unsafe_allow_html=True)
+        dataframe = pot_color_dict
 
-        # Display the 3D paper with controllable rotation and image texture using st.markdown
-        components.html(f"""
-        <!DOCTYPE html>
-        <html lang="en">
-        <head>
-            <meta charset="UTF-8">
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>Rectangle with Circles</title>
-            <style>
-                #rectangle {{
-                    position: relative;
-                    width: calc(100% - 40px); /* 4 طرف مارجین */
-                    height: calc(101vh - 40px); /* 4 طرف مارجین */
-                    background-color: gray;
-                    margin: 2px; /* مارجین */
-                    display: flex;
-                    flex-direction: column-reverse; /* قرار دادن مارجین از پایین به بالا */
-                }}
-    
-                .circle {{
-                    position: absolute;
-                    background-color: white;
-                    border-radius: 45%;
-                    cursor: pointer; /* اضافه کردن پوینتر دلخواه به دایره‌ها */
-                    margin: 5px; /* مارجین */
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                }}
-            </style>
-        </head>
-        <body>
-            <div id="rectangle">
-                <!-- Circles will be added dynamically using JavaScript -->
-            </div>
-    
-            <script>
-                // Number of rows and columns
-                var numRows = 5;
-                var numCols = 8;
-    
-                // Size of the rectangle
-                var rectWidth = document.getElementById('rectangle').clientWidth;
-                var rectHeight = document.getElementById('rectangle').clientHeight;
-    
-                // Size of each circle
-                var circleRadius = 35; // دایره‌ها بزرگتر
-    
-                // Reference to the rectangle element
-                var rectangle = document.getElementById('rectangle');
-    
-                // Draw circles inside the rectangle
-    var circlesData = [
-        ['Pot1', 'hsl(30, 70%, 70%)', 'Longest leaf: 12mm        Plant Height: 200mm        Leaf count: 10        Status: Healthy'],
-        ['Pot2', 'hsl(60, 70%, 70%)', 'Longest leaf: 15mm        Plant Height: 220mm        Leaf count: 8        Status: Healthy'],
-        ['Pot3', 'hsl(90, 70%, 70%)', 'Longest leaf: 10mm        Plant Height: 180mm        Leaf count: 15        Status: Unhealthy'],
-        ['Pot4', 'hsl(120, 70%, 70%)', 'Longest leaf: 14mm        Plant Height: 250mm        Leaf count: 12        Status: Healthy'],
-        ['Pot5', 'hsl(150, 70%, 70%)', 'Longest leaf: 16mm        Plant Height: 230mm        Leaf count: 9        Status: Healthy'],
-        ['Pot6', 'hsl(180, 70%, 70%)', 'Longest leaf: 11mm        Plant Height: 210mm        Leaf count: 13        Status: Unhealthy'],
-        ['Pot7', 'hsl(210, 70%, 70%)', 'Longest leaf: 13mm        Plant Height: 240mm        Leaf count: 11        Status: Healthy'],
-        ['Pot8', 'hsl(240, 70%, 70%)', 'Longest leaf: 17mm        Plant Height: 260mm        Leaf count: 7        Status: Healthy'],
-        ['Pot9', 'hsl(270, 70%, 70%)', 'Longest leaf: 9mm        Plant Height: 190mm        Leaf count: 14        Status: Unhealthy'],
-        ['Pot10', 'hsl(300, 70%, 70%)', 'Longest leaf: 14mm        Plant Height: 220mm        Leaf count: 10        Status: Healthy'],
-        ['Pot11', 'hsl(330, 70%, 70%)', 'Longest leaf: 15mm        Plant Height: 240mm        Leaf count: 8        Status: Healthy'],
-        ['Pot12', 'hsl(0, 70%, 70%)', 'Longest leaf: 13mm        Plant Height: 210mm        Leaf count: 12        Status: Healthy'],
-        ['Pot13', 'hsl(30, 70%, 70%)', 'Longest leaf: 16mm        Plant Height: 230mm        Leaf count: 9        Status: Healthy'],
-        ['Pot14', 'hsl(60, 70%, 70%)', 'Longest leaf: 10mm        Plant Height: 180mm        Leaf count: 15        Status: Unhealthy'],
-        ['Pot15', 'hsl(90, 70%, 70%)', 'Longest leaf: 14mm        Plant Height: 250mm        Leaf count: 12        Status: Healthy'],
-        ['Pot16', 'hsl(120, 70%, 70%)', 'Longest leaf: 16mm        Plant Height: 230mm        Leaf count: 9        Status: Healthy'],
-        ['Pot17', 'hsl(150, 70%, 70%)', 'Longest leaf: 11mm        Plant Height: 210mm        Leaf count: 13        Status: Unhealthy'],
-        ['Pot18', 'hsl(180, 70%, 70%)', 'Longest leaf: 13mm        Plant Height: 240mm        Leaf count: 11        Status: Healthy'],
-        ['Pot19', 'hsl(210, 70%, 70%)', 'Longest leaf: 17mm        Plant Height: 260mm        Leaf count: 7        Status: Healthy'],
-        ['Pot20', 'hsl(240, 70%, 70%)', 'Longest leaf: 9mm        Plant Height: 190mm        Leaf count: 14        Status: Unhealthy'],
-        ['Pot21', 'hsl(270, 70%, 70%)', 'Longest leaf: 14mm        Plant Height: 220mm        Leaf count: 10        Status: Healthy'],
-        ['Pot22', 'hsl(300, 70%, 70%)', 'Longest leaf: 15mm        Plant Height: 240mm        Leaf count: 8        Status: Healthy'],
-        ['Pot23', 'hsl(330, 70%, 70%)', 'Longest leaf: 13mm        Plant Height: 210mm        Leaf count: 12        Status: Healthy'],
-        ['Pot24', 'hsl(0, 70%, 70%)', 'Longest leaf: 16mm        Plant Height: 230mm        Leaf count: 9        Status: Healthy'],
-        ['Pot25', 'hsl(30, 70%, 70%)', 'Longest leaf: 10mm        Plant Height: 180mm        Leaf count: 15        Status: Unhealthy'],
-        ['Pot26', 'hsl(60, 70%, 70%)', 'Longest leaf: 14mm        Plant Height: 250mm        Leaf count: 12        Status: Healthy'],
-        ['Pot27', 'hsl(90, 70%, 70%)', 'Longest leaf: 16mm        Plant Height: 230mm        Leaf count: 9        Status: Healthy'],
-        ['Pot28', 'hsl(120, 70%, 70%)', 'Longest leaf: 11mm        Plant Height: 210mm        Leaf count: 13        Status: Unhealthy'],
-        ['Pot29', 'hsl(150, 70%, 70%)', 'Longest leaf: 13mm        Plant Height: 240mm        Leaf count: 11        Status: Healthy'],
-        ['Pot30', 'hsl(180, 70%, 70%)', 'Longest leaf: 17mm        Plant Height: 260mm        Leaf count: 7        Status: Healthy'],
-        ['Pot31', 'hsl(210, 70%, 70%)', 'Longest leaf: 9mm        Plant Height: 190mm        Leaf count: 14        Status: Unhealthy'],
-        ['Pot32', 'hsl(240, 70%, 70%)', 'Longest leaf: 14mm        Plant Height: 220mm        Leaf count: 10        Status: Healthy'],
-        ['Pot33', 'hsl(270, 70%, 70%)', 'Longest leaf: 15mm        Plant Height: 240mm        Leaf count: 8        Status: Healthy'],
-        ['Pot34', 'hsl(300, 70%, 70%)', 'Longest leaf: 13mm        Plant Height: 210mm        Leaf count: 12        Status: Healthy'],
-        ['Pot35', 'hsl(330, 70%, 70%)', 'Longest leaf: 16mm        Plant Height: 230mm        Leaf count: 9        Status: Healthy'],
-        ['Pot36', 'hsl(0, 70%, 70%)', 'Longest leaf: 10mm        Plant Height: 180mm        Leaf count: 15        Status: Unhealthy'],
-        ['Pot37', 'hsl(30, 70%, 70%)', 'Longest leaf: 14mm        Plant Height: 250mm        Leaf count: 12        Status: Healthy'],
-        ['Pot38', 'hsl(60, 70%, 70%)', 'Longest leaf: 16mm        Plant Height: 230mm        Leaf count: 9        Status: Healthy'],
-        ['Pot39', 'hsl(90, 70%, 70%)', 'Longest leaf: 11mm        Plant Height: 210mm        Leaf count: 13        Status: Unhealthy'],
-        ['Pot40', 'hsl(120, 70%, 70%)', 'Longest leaf: 13mm        Plant Height: 240mm        Leaf count: 11        Status: Healthy']
-    ];
-    
-    
-                for (var row = 0; row < numRows; row++) {{
-                    for (var col = 0; col < numCols; col++) {{
-                        var x = col * (rectWidth / numCols) + 5;
-                        var y = row * (rectHeight / numRows) + 25;
-    
-                        var circle = document.createElement('div');
-                        circle.className = 'circle';
-                        circle.style.width = circle.style.height = circleRadius * 2 + 'px';
-                        circle.style.left = x + 'px';
-                        circle.style.top = rectHeight - y - circleRadius * 2 + 'px'; // تغییر در محاسبه مختصات Y
-    
-                        // افزودن دیتا-موقعیت به هر دایره
-                        circle.setAttribute('data-x', x);
-                        circle.setAttribute('data-y', rectHeight - y - circleRadius * 2);
-    
-                        // افزودن تابع تاخیری برای رویداد کلیک
-                        circle.addEventListener('click', function(event) {{
-                            var x = event.target.getAttribute('data-x');
-                            var y = event.target.getAttribute('data-y');
-                            var text = event.target.getAttribute('data-text');
-                            alert(text);
-                        }});
-    
-                        // افزودن متن به یکی از دایره‌ها
-                        var text = document.createTextNode('Pot' + (row * numCols + col + 1));
-                        circle.appendChild(text);
-    
-                        // افزودن متن به دیتا-متن دایره
-                        var csvText = circlesData[row * numCols + col][2];
-                        circle.setAttribute('data-text', csvText);
-    
-                        // تغییر رنگ بر اساس داده هر پت
-                        var color = circlesData[row * numCols + col][1];
-                        circle.style.backgroundColor = color;
-    
-                        rectangle.appendChild(circle);
-                    }}
-                }}
-            </script>
-        </body>
-        </html>
-        """, width=800, height=600)
-
-        st.markdown(printCostumTitleAndContenth1('3D Represent of each crop ',''), unsafe_allow_html=True)
-        # Replace 'your_embed_code' with the actual embed code of your Sketchfab model
-        embed_code = """
-        <iframe width="800" height="600" src="https://sketchfab.com/3d-models/bok-choy-pak-choy-or-chinese-chard-07ad992bab3a4dd494936adeb288dd9d/embed" frameborder="0" allow="autoplay; fullscreen; vr" mozallowfullscreen="true" webkitallowfullscreen="true"></iframe>
-        """
-
-        # Extract the URL from the embed code
-        model_url = embed_code.split('src="')[1].split('"')[0]
-
-        # Embed the Sketchfab model using an iframe
-        st.components.v1.iframe(model_url, width=900, height=500)
-
-    if option2 == "Pak choy v.2":
-        html_content = f"""
-                                            <div style="border: 2px solid #333333; padding:10px; border-radius:5px;">
-                                                                <h3 style="color:#333333;">Digital Twin</h3>
-                                                                <p>Here system present the 3D version of the Green House. Select the Generation.</p>
-                                                                <p>Week: 2 / 4 </p>
-
-                                                        """
-
-        st.markdown(html_content, unsafe_allow_html=True)
-        col1, col2, col3 = st.columns(3)
+        # Streamlit app layout
+        # Define CSS styles
+        col1 , col2 = st.columns(2)
         with col1:
-            generation = st.selectbox('Select the current generation', (3, 4))
+
+            css_styles = """
+                <style>
+                    .button-container {
+                        display: grid;
+                        grid-template-columns: repeat(8, 1fr);
+                        gap: 10px;
+                        border: 2px solid #ddd; /* Border around the button container */
+                        padding: 10px; /* Add some padding for better appearance */
+                    }
+                    .button {
+                        width: 100%;
+                        height: 70px;
+                        background-color: #eee;
+                        color: #333;
+                        font-size: 10px;
+                        font-weight: bold;
+                        border: 2px solid #ddd;
+                        border-radius: 55px;
+                        cursor: pointer;
+                    }
+                </style>
+            """
+            # Display CSS styles
+            st.markdown(css_styles, unsafe_allow_html=True)
+
+            df = pd.read_csv('Dataset/Pock choy /Generation3_pot1.csv')
+            # Create button grid
+            button_container = f"""<div style="border: 2px solid #333333; padding:10px; border-radius:5px;">     <p style='text-align: center;'>Pot  {optionpot}</p>  <div class='button-container'>"""
+            for key, value in dataframe.items():
+                # Use Streamlit's button widget with a callback to display text on click
+                button_container += f"""<button class='button' style='background-color: {value}; border-color: {value}'
+                                   onclick='st.write("{key} clicked!")'>{key}</button>"""
+            button_container += "</div> </div>"
+
+            # Display button grid
+            st.markdown(button_container, unsafe_allow_html=True)
+
         with col2:
-            pot = st.selectbox('Select the Pot', (1, 2))
+            subpot = st.selectbox('Select the SubPot Number', list(range(41)))
+            df = pd.read_csv('Dataset/Pock choy /Generation3_pot1.csv')
+            #st.write(df['plantheight'].iloc[subpot])
+            html_content = f"""
+            <div style="border: 2px solid #333333; padding:10px; border-radius:5px;">
+                <h2>Health Crop Status: Good</h2>
+                <h2>Current Crop Traits</h2>
+                <table>
+                    <tr>
+                        <th>Leaf Count</th>
+                        <th>Longest Leaf (mm)</th>
+                        <th>Plant Height (mm)</th>
+                    </tr>
+                    <tr>
+                        <td>{df['leafcount'].iloc[subpot]}</td>
+                        <td>{df['longestleaf'].iloc[subpot]}</td>
+                        <td>{df['plantheight'].iloc[subpot]}</td>
+                    </tr>
+                </table>
+                <h2>Crop Traits Harvesting Time</h2>
+                <table border='1'>
+                    <tr>
+                        <th>Leaf Count</th>
+                        <th>Longest Leaf (mm)</th>
+                        <th>Plant Height (mm)</th>
+                    </tr>
+                    <tr>
+                        <td>{df['leafcount'].iloc[subpot] + 4}</td>
+                        <td>{df['longestleaf'].iloc[subpot] + 49}</td>
+                        <td>{df['plantheight'].iloc[subpot]+ 99}</td>
+                    </tr>
+                </table>
+            </div>
+            """
+            st.markdown(html_content , unsafe_allow_html=True)
 
-        import plotly.graph_objects as go
-        import pandas as pd
-        import numpy as np
+        def color_row(val):
+            color = 'green' if val == df['plantheight'].max() else 'orange' if val > df['plantheight'].mean() else 'red'
+            return f'background-color: {color}'
+        st.write('')
+        df = pd.read_csv('Dataset/Pock choy /Generation3_pot1.csv')
+        df1 = df.iloc[:20 , :]
+        df2 = df.iloc[20: , :]
 
-        # Function to create 3D greenhouse layout with plants
-        def create_greenhouse_layout(rows, cols):
-            layout = np.zeros((rows, cols))
-            return layout
+        # Load the CSV dat
 
-        # Function to plot 3D greenhouse with plants
-        def plot_greenhouse(layout, plant_heights, leaf_counts):
-            fig = go.Figure()
+        # Define a function to apply color based on plantheight
 
-            # Plot greenhouse structure
-            fig.add_trace(go.Mesh3d(x=[20, 20, 20, 20, -5, -5, -5, -5],
-                                    y=[0, 0, 10, 10, 0, 0, 10, 10],
-                                    z=[10, 10, 10, 10, 10, 10, 10, 10],  # Extend the bottom surface
-                                    opacity=0.5, color='white', name='Greenhouse Structure'))
 
-            fig.add_trace(go.Mesh3d(x=[30, 30, 30, 30, 15, 15, 15, 15],
-                                    y=[0, 0, 10, 10, 0, 0, 10, 10],
-                                    z=[10, 10, 10, 10, 10, 10, 10, 10],
-                                    opacity=0.5, color='lightgray', name='Space between Sets'))
+        # Apply the color function to the plantheight column
 
-            plant_counter = 1
+        # Display the styled dataframe
+        col1 , col2 = st.columns(2)
+        with col1:
+            df1 = df1.style.applymap(color_row, subset=['plantheight'])
+            html_table = df1.to_html(index=False, classes='table-style', justify='center')
 
-            # Plot first set of plants
-            for i in range(len(layout)):
-                for j in range(len(layout[i])):
-                    if layout[i, j] == 1:
-                        plant_height = plant_heights[i, j]
-                        leaf_count = leaf_counts[i, j]
+            # Display the HTML using st.markdown
+            st.markdown(html_table, unsafe_allow_html=True)
+        with col2:
+            df2 = df2.style.applymap(color_row, subset=['plantheight'])
+            html_table = df2.to_html(index=False, classes='table-style', justify='center')
 
-                        # Draw stem (line)
-                        fig.add_trace(go.Scatter3d(x=[j + 0.5, j + 0.5],
-                                                   y=[i + 0.5, i + 0.5],
-                                                   z=[1, 1 + plant_height],
-                                                   mode='lines',
-                                                   line=dict(color='green', width=3),
-                                                   name=f'Plant {plant_counter}',
-                                                   customdata=[plant_counter, leaf_count, plant_height],
-                                                   hoverinfo='name+x+y+z+text'
-                                                   ))
+            # Display the HTML using st.markdown
+            st.markdown(html_table, unsafe_allow_html=True)
 
-                        # Draw plant head (scatter3d markers)
-                        fig.add_trace(go.Scatter3d(x=[j + 0.5],
-                                                   y=[i + 0.5],
-                                                   z=[1 + plant_height],
-                                                   mode='markers',
-                                                   marker=dict(size=leaf_count, color='green'),
-                                                   name=f'Plant {plant_counter}',
-                                                   customdata=[plant_counter, leaf_count, plant_height],
-                                                   hoverinfo='name+x+y+z+text'
-                                                   ))
+        st.write('')
+        st.markdown(printWithTitleAndBoarder1('Simulation' , """Experiment with various nutrient levels and observe their impact on the upcoming week's outcomes.""") , unsafe_allow_html=True)
 
-                        plant_counter += 1
+        col1, col2 = st.columns(2)
 
-            # Plot second set of plants with a distance of 10 units
-            for i in range(len(layout)):
-                for j in range(len(layout[i])):
-                    if layout[i, j] == 1:
-                        plant_height = plant_heights[i, j]
-                        leaf_count = leaf_counts[i, j]
+        # Sliders in the first column
+        temperature = col1.slider("Temperature (°C)", min_value=0, max_value=100, value=25, step=1)
+        salinity = col1.slider("Salinity", min_value=0, max_value=50, value=25, step=1)
+        tds = col1.slider("TDS (ppm)", min_value=0, max_value=1000, value=500, step=10)
 
-                        # Draw stem (line) for the second set
-                        fig.add_trace(go.Scatter3d(x=[j + 10.5, j + 10.5],
-                                                   y=[i + 0.5, i + 0.5],
-                                                   z=[1, 1 + plant_height],
-                                                   mode='lines',
-                                                   line=dict(color='green', width=3),
-                                                   name=f'Plant {plant_counter}',
-                                                   customdata=[plant_counter, leaf_count, plant_height],
-                                                   hoverinfo='name+x+y+z+text'
-                                                   ))
+        # Sliders in the second column
+        orp = col2.slider("ORP (mV)", min_value=0, max_value=1000, value=500, step=10)
+        sr = col2.slider("Sr", min_value=0, max_value=100, value=50, step=1)
+        ec = col2.slider("EC (µS/cm)", min_value=0, max_value=100, value=50, step=1)
+        ph = col2.slider("pH", min_value=0, max_value=14, value=7, step=1)
 
-                        # Draw plant head (scatter3d markers) for the second set
-                        fig.add_trace(go.Scatter3d(x=[j + 10.5],
-                                                   y=[i + 0.5],
-                                                   z=[1 + plant_height],
-                                                   mode='markers',
-                                                   marker=dict(size=leaf_count, color='green'),
-                                                   name=f'Plant {plant_counter}',
-                                                   customdata=[plant_counter, leaf_count, plant_height],
-                                                   hoverinfo='name+x+y+z+text'
-                                                   ))
 
-                        plant_counter += 1
+        col1 , col2 , col3 , col4, col5  = st.columns(5)
 
-            # Set layout properties
-            fig.update_layout(scene=dict(aspectmode="manual", aspectratio=dict(x=1, y=1, z=0.5),
-                                         xaxis=dict(showgrid=False),
-                                         yaxis=dict(showgrid=False),
-                                         zaxis=dict(showgrid=False)))
+        if col3.button('_______Apply_______'):
+            file_path = 'Dataset/Pock choy /Generation3_pot1.csv'
 
-            return fig
+            # Read the CSV file into a pandas DataFrame
+            df = pd.read_csv(file_path)
 
-        # Streamlit UI
+            # Define a mapping for status to color
+            status_color_mapping = {'good': 'green', 'normal': 'orange', 'bad': 'red'}
 
-        # Read plant heights and leaf counts from greenhouse_data.csv
-        csv_file = "Dataset/Pock choy /greenhouse_data.csv"
-        df = pd.read_csv(csv_file)
-        plant_heights = df.pivot(index='Row', columns='Column', values='PlantHeight').values
-        leaf_counts = df.pivot(index='Row', columns='Column', values='LeafCount').values
+            # Create a dictionary with pot number as keys and color as values
+            pot_color_dict = {}
+            for index, row in df.iterrows():
+                pot_number = row['subpotnumber']
+                status = row['status'].lower()  # Convert to lowercase for case-insensitivity
+                color = status_color_mapping.get(status,
+                                                 'unknown')  # Default to 'unknown' if status is not one of the specified values
+                pot_color_dict[pot_number] = color
 
-        # Create greenhouse layout
-        rows, cols = plant_heights.shape
-        greenhouse_layout = create_greenhouse_layout(rows, cols)
+            print(pot_color_dict)
 
-        # Checkboxes to represent plants in the greenhouse
-        st.write("")
-        for i in range(rows):
-            for j in range(cols):
-                greenhouse_layout[i, j] = 1
+            dataframe = pot_color_dict
 
-        # Plot 3D greenhouse
-        fig = plot_greenhouse(greenhouse_layout, plant_heights, leaf_counts)
-        fig.update_layout(scene=dict(aspectmode="manual", aspectratio=dict(x=1, y=1, z=0.5),
-                                     xaxis=dict(showgrid=False),
-                                     yaxis=dict(showgrid=False),
-                                     zaxis=dict(showgrid=False)),
-                          title=f'Generation {generation} 3D Layout',
-                          width=800,
-                          height=800
-                          )
+            # Streamlit app layout
+            # Define CSS styles
+            col1, col2 = st.columns(2)
+            with col1:
+                css_styles = """
+                            <style>
+                                .button-container {
+                                    display: grid;
+                                    grid-template-columns: repeat(8, 1fr);
+                                    gap: 10px;
+                                    border: 2px solid #ddd; /* Border around the button container */
+                                    padding: 10px; /* Add some padding for better appearance */
+                                }
+                                .button {
+                                    width: 100%;
+                                    height: 70px;
+                                    background-color: #eee;
+                                    color: #333;
+                                    font-size: 10px;
+                                    font-weight: bold;
+                                    border: 2px solid #ddd;
+                                    border-radius: 55px;
+                                    cursor: pointer;
+                                }
+                            </style>
+                        """
+                # Display CSS styles
+                st.markdown(css_styles, unsafe_allow_html=True)
 
-        # Display the 3D plot
-        st.plotly_chart(fig)
+                df = pd.read_csv('Dataset/Pock choy /Generation3_pot1.csv')
+                # Create button grid
+                button_container = f"""<div style="border: 2px solid #333333; padding:10px; border-radius:5px;">     <p style='text-align: center;'>Pot  {optionpot}</p>  <div class='button-container'>"""
+                for key, value in dataframe.items():
+                    import random
+                    value = random.choice(['red', 'green', 'orange'])
+                    # Use Streamlit's button widget with a callback to display text on click
+                    button_container += f"""<button class='button' style='background-color: {value}; border-color: {value}'
+                                               onclick='st.write("{key} clicked!")'>{key}</button>"""
+                button_container += "</div> </div>"
 
-        # Handle click events
-        scatter = next(fig.select_traces(selector=dict(type='scatter3d')))
-        points_data = scatter['customdata']
-        print(points_data)
-        # Check if a point is clicked
+                # Display button grid
+                st.markdown(button_container, unsafe_allow_html=True)
+                #-------_______--------_______-------_______-----
 
-        headers = ["PlantID" ,"generation", "pot", "subpot", "leaves count", "longest leaf", "plant height" ]
+                subpot = st.selectbox('Select the SubPot', list(range(41)))
+                df = pd.read_csv('Dataset/Pock choy /Generation3_pot1.csv')
+                # st.write(df['plantheight'].iloc[subpot])
+                html_content = f"""
+                            <div style="border: 2px solid #333333; padding:10px; border-radius:5px;">
+                                <h2>Health Crop Status: Good</h2>
+                                <h2>Current Crop Traits</h2>
+                                <table>
+                                    <tr>
+                                        <th>Leaf Count</th>
+                                        <th>Longest Leaf (mm)</th>
+                                        <th>Plant Height (mm)</th>
+                                    </tr>
+                                    <tr>
+                                        <td>{df['leafcount'].iloc[subpot]}</td>
+                                        <td>{df['longestleaf'].iloc[subpot]}</td>
+                                        <td>{df['plantheight'].iloc[subpot]}</td>
+                                    </tr>
+                                </table>
+                                <h2>Crop Traits Harvesting Time</h2>
+                                <table border='1'>
+                                    <tr>
+                                        <th>Leaf Count</th>
+                                        <th>Longest Leaf (mm)</th>
+                                        <th>Plant Height (mm)</th>
+                                    </tr>
+                                    <tr>
+                                        <td>{df['leafcount'].iloc[subpot] + 4}</td>
+                                        <td>{df['longestleaf'].iloc[subpot] + 49}</td>
+                                        <td>{df['plantheight'].iloc[subpot] + 99}</td>
+                                    </tr>
+                                </table>
+                            </div>
+                            """
+                st.markdown(html_content, unsafe_allow_html=True)
 
-        # Create a list to hold the data
-        data = []
 
-        # Generate data for 40 plants
-        Plantcount = 1
-        generation = 3
-        for pot in range(1, 3):
-            for subpot in range(1, 41):
-                leaves_count = 10 + subpot  # Example logic for leaves count
-                longest_leaf = 5.0 + 0.1 * subpot  # Example logic for longest leaf
-                plant_height = 20.0 + 0.5 * subpot  # Example logic for plant height
 
-                # Append data for each plant
-                data.append([Plantcount , generation, pot, subpot, leaves_count, longest_leaf, plant_height])
-                Plantcount = Plantcount + 1
-        # Create a DataFrame
-        df = pd.DataFrame(data, columns=headers)
 
-        # Display DataFrame as an HTML table using Streamlit
-        st.write(df.to_html(index=False, escape=False), unsafe_allow_html=True)
+
+
+
+
 
 

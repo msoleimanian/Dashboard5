@@ -251,9 +251,8 @@ def insightConstructor():
         # HTML styling with inline styles for black text color, thicker black border lines, and increased width
 
         html_code = f"""
-                    <h2 style="color: #000; text-align: center;">Performance Table</h2>
+                    <h2 style="color: #000; text-align: center;">Performance</h2>
 
-            <div style="background-color:#f4f4f4;padding:20px;border-radius:10px">
             <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
                 <tr>
                     <th style="border: 2px solid #000; padding: 10px;">Season</th>
@@ -437,8 +436,7 @@ def insightConstructor():
 
         html_code_packchoy = f"""
         
-            <h2 style="color: #000; text-align: center;">Performance Table</h2>
-                <div style="background-color:#f4f4f4;padding:20px;border-radius:10px">                
+            <h2 style="color: #000; text-align: center;">Performance</h2>
                     <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
                         <tr>
                             <th style="border: 2px solid #000; padding: 10px;">Generation</th>
@@ -618,20 +616,12 @@ def insightConstructor():
             st.plotly_chart(fig)
 
     if option2 == "Aqua":
-
-
-
-
-        st.markdown(printCostumTitleAndContenth3('Performance table' ,''),unsafe_allow_html=True)
         # Load the CSV data
         df = pd.read_csv('Dataset/Aqua/GrowthRate.csv')
-
         # Highlight rows with negative growth rates using a custom CSS class
         def highlight_negative(val):
             color = 'red' if '-' in str(val) else 'black'
             return f'color: {color}; background-color: #FFD2D2' if color == 'red' else ''
-
-
         # Apply the custom styling
         styled_df = df.style.applymap(highlight_negative, subset=['GROWTH RATE LENGTH', 'GROWTH RATE WEIGHT'])
 

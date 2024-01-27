@@ -11,10 +11,77 @@ def exploreConstructor():
     import pandas as pd
     import plotly.express as px
     import io
+    import json
+    import requests
     from streamlit_option_menu import option_menu
 
+    def get_field_datas(field_number):
+        URL = f'https://api.thingspeak.com/channels/1649792/fields/{field_number}.json?api_key='
+        KEY = 'YOUR_API_KEY'
+        NEW_URL = URL + KEY
 
+        get_data = requests.get(NEW_URL).json()
+        channel_id = get_data['channel']['id']
+        field_data = get_data['feeds']
+        time = []
+        val = []
+        df = pd.DataFrame()
+        for data in field_data:
+            time.append(data['created_at'])
+            val.append(data[f'field{field_number}'])
 
+        df['time'] = time
+        df['value'] = val
+        print(field_data)
+        # Extracting values for the specified field
+        return df
+
+    def get_field_data(field_number):
+        URL = f'https://api.thingspeak.com/channels/1649792/fields/{field_number}.json?api_key='
+        KEY = 'YOUR_API_KEY'
+        NEW_URL = URL + KEY
+
+        get_data = requests.get(NEW_URL).json()
+        channel_id = get_data['channel']['id']
+        field_data = get_data['feeds']
+        print(field_data[len(field_data) - 1]['created_at'])
+        # Extracting values for the specified field
+        values = [field_data[1][f'field{field_number}']]
+        time = field_data[len(field_data) - 1]['created_at']
+        return values
+
+    def getPakChoyData(nutreint):
+
+        url = "https://api.satu.singularityaero.tech/api/telemetries"
+
+        payload = json.dumps({
+            "deviceUniqueId": "UPMSO2001",
+            "telemetryTypeCode": nutreint,
+            "dateStart": "2023-10-10 21:50:39"
+        })
+        headers = {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer 25|iEjCopmkc73ZFYtCzHCFLnCJb670ErvV3VBfGCt2'
+        }
+
+        response = requests.request("GET", url, headers=headers, data=payload)
+
+        data = response.json()
+        print("$$$$$$$$$$$$$$$$$$$")
+        print(data)
+        time = []
+        val = []
+        dataframe = pd.DataFrame()
+
+        for d in data['data']:
+            val.append(d['value'])
+            time.append(d['readingAt'])
+
+        dataframe['time'] = time
+        dataframe['value'] = val
+        print("$$$$$$$$$$$$$$$$$$$")
+        return dataframe
 
     def printCostumTitleAndContenth3(title, context):
         return f"""
@@ -583,6 +650,36 @@ def exploreConstructor():
             # Display the animated chart
             st.plotly_chart(fig)
 
+        html_content = f"""
+                                    <div style="border: 2px solid #333333; padding:10px; border-radius:5px;">
+                                                        <h3 style="color:#333333;">Query</h3>
+                                                        <p>You can see the trend of the metric base on the date that you can select.</p>
+                                                    </div>
+                                                """
+        st.markdown(html_content, unsafe_allow_html=True)
+        col_1, col_2, col_3 = st.columns(3)
+        df = pd.DataFrame()
+        with col_1:
+            optionsnutrient = st.selectbox(
+                'Select the metric',
+                ('waterTemperature', 'waterPh', 'waterSr', 'waterOrp', 'waterTds', 'waterSalinity'))
+            df = getPakChoyData(optionsnutrient)
+        with col_2:
+            startDate = st.selectbox(
+                'Select the Start Date',
+                (df['time'])
+            )
+        with col_3:
+            endDate = st.selectbox(
+                'Select the End Date',
+                (df['time'])
+            )
+        mask = (df['time'] > startDate) & (df['time'] <= endDate)
+        p = px.line(df.loc[mask], x='time', y='value', title=optionsnutrient)
+        st.plotly_chart(p)
+
+
+
     if option2 == 'Aqua':
         selectdate = st.selectbox(
                 "Select the date...",
@@ -615,3 +712,54 @@ def exploreConstructor():
                                                            color='green',
                                                            max_size=200)
             st.components.v1.html(progress_html, height=210)
+
+        fieldname = {'Field 1': 'Temperature', 'Field 2': 'pH', 'Field 3': 'Ammonia', 'Field 4': 'DO',
+                     'Field 5': 'Salinity'}
+        all_data = {fieldname[f'Field {i}']: get_field_data(i) for i in range(1, 6)}
+        print(all_data)
+        print(float(all_data['pH'][0]))
+
+        # ---------------------------------------------------------------------------------
+
+        URL = f'https://api.thingspeak.com/channels/1649792/fields/1.json?api_key='
+        KEY = 'YOUR_API_KEY'
+        NEW_URL = URL + KEY
+
+        get_data = requests.get(NEW_URL).json()
+        channel_id = get_data['channel']['id']
+        field_data = get_data['feeds']
+        print(field_data[len(field_data) - 1]['created_at'])
+
+        html_content = f"""
+                                    <div style="border: 2px solid #333333; padding:10px; border-radius:5px;">
+                                                        <h3 style="color:#333333;">Query</h3>
+                                                        <p>You can see the trend of the metric base on the date that you can select.</p>
+                                                    </div>
+                                                """
+        st.markdown(html_content, unsafe_allow_html=True)
+
+        col_1, col_2, col_3 = st.columns(3)
+        df = pd.DataFrame()
+        with col_1:
+            options = st.selectbox(
+                'Select the option',
+                ('Temperature', 'pH', 'Ammonia', 'DO', 'Salinity'))
+
+            fieldname2 = {'Temperature': 1, 'pH': 2, 'Ammonia': 3, 'DO': 4, 'Salinity': 5}
+            print(get_field_datas(fieldname2[options]))
+            df = get_field_datas(fieldname2[options])
+        with col_2:
+            startDate = st.selectbox(
+                'Select the Start Date',
+                (df['time'])
+            )
+        with col_3:
+            endDate = st.selectbox(
+                'Select the End Date',
+                (df['time'])
+            )
+        mask = (df['time'] > startDate) & (df['time'] <= endDate)
+        p = px.line(df.loc[mask], x='time', y='value', title=options)
+        st.plotly_chart(p)
+
+

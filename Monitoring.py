@@ -11,6 +11,62 @@ from streamlit_option_menu import option_menu
 import streamlit.components.v1 as components
 import requests
 import json
+import time
+import plotly.graph_objects as go
+from plotly.subplots import make_subplots
+
+
+def animated_gauge_progress_bar(value, title , rmin , rmax):
+    if 1 <= value <= 10:
+        bar_color = "red"
+    else:
+        bar_color = "#4CAF50"  # Default color for other values
+
+
+
+    fig = make_subplots(
+        rows=1, cols=1,
+        specs=[[{'type': 'indicator'}]]
+    )
+    fig.add_trace(go.Indicator(
+        mode="number+gauge",
+        value=value,
+        domain={'x': [0, 1], 'y': [0, 1]},
+        delta={'reference': 50, 'position': 'top'},
+        gauge=dict(
+            axis=dict(range=[rmin, rmax]),
+            bar=dict(color='black'),  # Set color dynamically
+            bgcolor="white",
+            borderwidth=2,
+            bordercolor="gray",
+            steps=[dict(range=[0, 100], color="lightgray")]
+        ),
+        title=dict(text=title, font=dict(size=20)),  # Set title directly within the trace
+    ))
+
+    fig.update_layout(
+        height=200,
+        margin=dict(l=15, r=15, b=15, t=60),
+    )
+
+    return fig
+
+
+def guageCreator(vlaue , title, rmin , rmax):
+
+        # Streamlit app
+        chart_placeholder = st.empty()
+        vla = round(vlaue)
+        if vla <= 1 :
+            animated_chart = animated_gauge_progress_bar(vlaue, title, rmin, rmax)
+            chart_placeholder.plotly_chart(animated_chart, use_container_width=True)
+        # Update the progress value with an animation
+        else:
+            for value in range(0, vla, 1):
+                time.sleep(0.06)
+                animated_chart = animated_gauge_progress_bar(value, title, rmin, rmax)
+                chart_placeholder.plotly_chart(animated_chart, use_container_width=True)
+                st.empty()  # Clear the previous chart to create animation effect
 
 def get_field_data(field_number):
     URL = f'https://api.thingspeak.com/channels/1649792/fields/{field_number}.json?api_key='
@@ -57,7 +113,6 @@ def printCostumTitleAndContenth3(title, context):
         <div class="container">
         </div>
         """
-
 def printCostumTitleAndContenth2(title, context):
     return f"""
         <div class="jumbotron">
@@ -238,7 +293,41 @@ def getPakChoyDatas(nutreint):
     data = response.json()
     return data
 
+def cardCreator(title , value):
 
+    html_code = """
+    <html>
+        <style>
+            .status-card {
+                background-color: #c1f0c1; /* Light green color */
+                padding: 20px;
+                border-radius: 50%; /* Make it circular */
+                width: 200px; /* Set a fixed width for the circular card */
+                height: 200px; /* Set a fixed height for the circular card */
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                text-align: center;
+            }
+        </style>"""
+
+    html_code =  html_code + f"""<div class='status-card'>
+            <h5>{title}</h5>
+            <p> {value} </p>
+        </div>
+        </html>
+    """
+    st.markdown(html_code, unsafe_allow_html=True)
+
+def textwithboarder(title, text):
+    html_content = f"""
+            <div style="border: 2px solid #333333; padding:10px; border-radius:5px;">
+                                <h3 style="color:#333333;">{title}</h3>
+                                <p>{text}</p>
+                            </div>"""
+    # Show the Guage of the Nutrients levels
+    st.markdown(html_content, unsafe_allow_html=True)
 
 def MonitoringConstructor():
     option2 = option_menu(None, ["Pak choy", "Rice", "Aqua"],
@@ -251,139 +340,99 @@ def MonitoringConstructor():
                                       "nav-link-selected": {"background-color": "green"},
                                   }
                                   )
-
-    import requests
-
-
-
-
-
     if option2 == "Aqua":
+        fieldname = {'Field 1': 'Temperature', 'Field 2': 'pH', 'Field 3': 'Ammonia', 'Field 4': 'DO',
+                     'Field 5': 'Salinity'}
+        all_data = {fieldname[f'Field {i}']: get_field_data(i) for i in range(1, 6)}
+        html = f"""
+
+                <div style="border: 2px solid #333333; padding:10px; border-radius:5px;">
+                        <h3 style="color:#333333;">Daily Suggestions</h3>
+                        <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
+                    <tr>
+                        <th style="border: 2px solid #000; padding: 10px;"></th>
+                        <th style="border: 2px solid #000; padding: 10px;">pH</th>
+                        <th style="border: 2px solid #000; padding: 10px;">Ammonia</th>
+                        <th style="border: 2px solid #000; padding: 10px;">DO</th>
+                        <th style="border: 2px solid #000; padding: 10px;">Salinity</th>
+                    <tr>
+                    <td style='border: 2px solid #000; padding: 10px;'>BenchMark</td>
+                    <td style='border: 2px solid #000; padding: 10px;'>7.5</td>
+                    <td style='border: 2px solid #000; padding: 10px;'>0.2</td>
+                    <td style='border: 2px solid #000; padding: 10px;'>7</td>
+                    <td style='border: 2px solid #000; padding: 10px;'>33</td>
+                    </tr>
+                    <tr>
+                    <td style='border: 2px solid #000; padding: 10px;'>Current</td>
+                    <td style='border: 2px solid #000; padding: 10px;'>{float(all_data['pH'][0])}</td>
+                    <td style='border: 2px solid #000; padding: 10px;'>{float(all_data['Ammonia'][0])}</td>
+                    <td style='border: 2px solid #000; padding: 10px;'>{float(all_data['DO'][0])}</td>
+                    <td style='border: 2px solid #000; padding: 10px;'>{float(all_data['Salinity'][0])}</td>
+                    </tr>
+                    <tr><td style='border: 2px solid #000; padding: 10px;'>Intervention plan</td>
+                    <td style='border: 2px solid #000; padding: 10px;'>{round(7.5- float(all_data['pH'][0]),2)}</td>
+                    <td style='border: 2px solid #000; padding: 10px;'>{round(0.2- float(all_data['Ammonia'][0]),2)}</td>
+                    <td style='border: 2px solid #000; padding: 10px;'>{round(7- float(all_data['DO'][0]), 2)}</td>
+                    <td style='border: 2px solid #000; padding: 10px;'>{round(33- float(all_data['Salinity'][0]),2)}</td>
+                    </tr>
+                    </table>
+                    </div>
+                """
+
+        st.write("")
+        st.markdown(html, unsafe_allow_html=True)
+        st.write("")
 
 
+        # Cards
+        aquadataset = pd.read_csv('Dataset/Aqua/AquaSammury.csv')
+        # title for the Traits
+        st.markdown(textwithboarder('Real-time Traits', f"""View the latest data from Aqua Fish traits and explore the forecast for the upcoming traits. (latest data {aquadataset.iloc[len(aquadataset) - 1]['Date']})""" ))
+        col1, col2, col3, col4 = st.columns(4)
+        with col1:
+            cardCreator('LENGTH (cm)', aquadataset.iloc[len(aquadataset) - 1]['LENGTH (cm)'])
+        with col2:
+            cardCreator('WEIGHT (kg)', aquadataset.iloc[len(aquadataset) - 1]['WEIGHT (kg)'])
+        with col3:
+            cardCreator('Future LENGTH (cm)', 66 )
+        with col4:
+            cardCreator('Future WEIGHT (kg)', 2.10)
+        st.write('')
+
+        # Read Data from Aqua API
         fieldname = {'Field 1' : 'Temperature' ,'Field 2' : 'pH', 'Field 3' : 'Ammonia','Field 4' : 'DO', 'Field 5':'Salinity'}
         all_data = {fieldname[f'Field {i}']: get_field_data(i) for i in range(1, 6)}
-        print(all_data)
-        print(float(all_data['pH'][0]))
-
-
-        #---------------------------------------------------------------------------------
-
-        import plotly.graph_objects as go
-
-        fig_ph = go.Figure(go.Indicator(
-            domain={'x': [0, 1], 'y': [0, 1]},
-            value=float(all_data['pH'][0]),
-            mode="gauge+number+delta",
-            title={'text': "pH"},
-            delta={'reference': 7 , },
-            gauge={'axis': {'range': [None, 14] ,},
-                   'bar': {'color': "black"},
-                   'steps': [
-                       {'range': [0, 5], 'color': "red"},
-                       {'range': [5, 6], 'color': "orange"},
-                       {'range': [6, 8.5], 'color': "green"},
-                   {'range': [8.5, 9], 'color': "orange"},
-                   {'range': [9, 14], 'color': "red"}],
-                   'threshold': {'line': {'color': "red", 'width': 4}, 'thickness': 0.75, 'value': 490}}))
-
-        fig_temp = go.Figure(go.Indicator(
-            domain={'x': [0, 1], 'y': [0, 1]},
-            value=float(all_data['Temperature'][0]),
-            mode="gauge+number+delta",
-            title={'text': "Temperature"},
-            delta={'reference': 30, },
-            gauge={'axis': {'range': [None, 40], },
-                   'bar': {'color': "black"},
-                   'steps': [
-                       {'range': [0, 22], 'color': "red"},
-                       {'range': [22, 26], 'color': "orange"},
-                       {'range': [26, 32], 'color': "green"},
-                       {'range': [32, 35], 'color': "orange"},
-                       {'range': [35, 40], 'color': "red"}],
-                   'threshold': {'line': {'color': "red", 'width': 4}, 'thickness': 0.75, 'value': 490}}))
-
-        fig_Amo = go.Figure(go.Indicator(
-            domain={'x': [0, 1], 'y': [0, 1]},
-            value=float(all_data['Ammonia'][0]),
-            mode="gauge+number+delta",
-            title={'text': "Ammonia"},
-            delta={'reference': 0.5, },
-            gauge={'axis': {'range': [None, 0.12], },
-                   'bar': {'color': "black"},
-                   'steps': [
-                       {'range': [0, 0.05], 'color': "red"},
-                       {'range': [0.05, 0.06], 'color': "orange"},
-                       {'range': [0.06, 0.08], 'color': "green"},
-                       {'range': [0.08, 1.2], 'color': "red"}],
-                   'threshold': {'line': {'color': "red", 'width': 4}, 'thickness': 0.75, 'value': 490}}))
-
-        fig_Do = go.Figure(go.Indicator(
-            domain={'x': [0, 1], 'y': [0, 1]},
-            value=float(all_data['DO'][0]),
-            mode="gauge+number+delta",
-            title={'text': "Do"},
-            delta={'reference': 9, },
-            gauge={'axis': {'range': [None, 20], },
-                   'bar': {'color': "black"},
-                   'steps': [
-                       {'range': [0, 4], 'color': "red"},
-                       {'range': [4, 9], 'color': "orange"},
-                       {'range': [9, 20], 'color': "green"}],
-                   'threshold': {'line': {'color': "red", 'width': 4}, 'thickness': 0.75, 'value': 490}}))
-
-        fig_Salinity = go.Figure(go.Indicator(
-            domain={'x': [0, 1], 'y': [0, 1]},
-            value=float(all_data['Salinity'][0]),
-            mode="gauge+number+delta",
-            title={'text': "Salinity"},
-            delta={'reference': 20, },
-            gauge={'axis': {'range': [None, 40], },
-                   'bar': {'color': "black"},
-                   'steps': [
-                       {'range': [0, 20], 'color': "orange"},
-                       {'range': [20, 35], 'color': "green"},
-                       {'range': [35, 37], 'color': "orange"},
-                       {'range': [37, 40], 'color': "red"}],
-                   'threshold': {'line': {'color': "red", 'width': 4}, 'thickness': 0.75, 'value': 490}}))
-
         URL = f'https://api.thingspeak.com/channels/1649792/fields/1.json?api_key='
         KEY = 'YOUR_API_KEY'
         NEW_URL = URL + KEY
 
+        # Check the Time
         get_data = requests.get(NEW_URL).json()
-        channel_id = get_data['channel']['id']
         field_data = get_data['feeds']
-        print(field_data[len(field_data) - 1]['created_at'])
-
-
         html_content = f"""
-                                <div style="border: 2px solid #333333; padding:10px; border-radius:5px;">
-                                                    <h3 style="color:#333333;">Real-Time Monitoring</h3>
-                                                    <p>You can see the level of the nutrients at {field_data[len(field_data) - 1]['created_at']}</p>
-                                                </div>
-                                            """
-        st.markdown(html_content, unsafe_allow_html=True)
-        col1, col2, col3, col4, col5 = st.columns(5)
+                                        <div style="border: 2px solid #333333; padding:10px; border-radius:5px;">
+                                                            <h3 style="color:#333333;">Real-Time Monitoring</h3>
+                                                            <p>Track real-time nutrient levels for Aqua. {field_data[len(field_data) - 1]['created_at']}</p>
+                                                        </div>
+                                                    """
+        # Show the Guage of the Nutrients levels
+        st.markdown(html_content , unsafe_allow_html=True)
+        col1, col2, col3, col4 = st.columns(4)
         with col1:
-            st.plotly_chart(fig_ph,use_container_width=True , height = 500)
+            guageCreator(float(all_data['pH'][0]), 'pH', 1, 14)
         with col2:
-            st.plotly_chart(fig_temp,use_container_width=True)
+            guageCreator(float(all_data['Temperature'][0]), 'Temperature', 10, 55 )
         with col3:
-            st.plotly_chart(fig_Amo,use_container_width=True ,height=20)
+            guageCreator(float(all_data['Ammonia'][0]), 'Ammonia', 0, 0.12)
         with col4:
-            st.plotly_chart(fig_Do,use_container_width=True ,height=20)
-        with col5:
-            st.plotly_chart(fig_Salinity,use_container_width=True ,height=20)
-        options = st.selectbox(
-            'Select the option',
-            ('Temperature', 'pH', 'Ammonia', 'DO','Salinity'))
+            guageCreator(float(all_data['DO'][0]), 'DO', 0, 20)
 
-        fieldname2 = { 'Temperature':1, 'pH':2, 'Ammonia' :3 ,'DO':4, 'Salinity':5}
-        print(get_field_datas(fieldname2[options]))
-        df = get_field_datas(fieldname2[options])
-        p = px.line(df, x='time', y='value', title='Salinity Trend')
-        st.plotly_chart(p)
+        col1, col2, col3, col4 = st.columns(4)
+        with col1:
+            guageCreator(float(all_data['Salinity'][0]), 'Salinity', 0, 40)
+
+
+
 
     if option2 == "Pak choy":
         data = getPakChoyData('waterPh')
@@ -538,372 +587,62 @@ def MonitoringConstructor():
         df = getPakChoyDatas(options)
         print(df)
 
-
-
-def getPakChoyDatas(nutreint):
-
-
-    url = "https://api.satu.singularityaero.tech/api/telemetries"
-
-    payload = json.dumps({
-        "deviceUniqueId": "UPMSO2001",
-        "telemetryTypeCode": "Temperature",
-        "dateStart": "2023-10-10 21:50:39"
-    })
-    headers = {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer 25|iEjCopmkc73ZFYtCzHCFLnCJb670ErvV3VBfGCt2'
-    }
-
-    response = requests.request("GET", url, headers=headers, data=payload)
-
-    data = response.json()
-    return data
-
-
-
-def MonitoringConstructor():
-    option2 = option_menu(None, ["Pak choy", "Rice", "Aqua"],
-                                  menu_icon="forward", default_index=0, orientation="horizontal",
-                                  styles={
-                                      "container": {"padding": "0!important", "background-color": "#fafafa"},
-                                      "icon": {"color": "orange", "font-size": "15px"},
-                                      "nav-link": {"font-size": "15px", "text-align": "right", "margin": "0px",
-                                                   "--hover-color": "#eee", },
-                                      "nav-link-selected": {"background-color": "green"},
-                                  }
-                                  )
-
-    import requests
-
-
-
-
-
-    if option2 == "Aqua":
-
-
-        fieldname = {'Field 1' : 'Temperature' ,'Field 2' : 'pH', 'Field 3' : 'Ammonia','Field 4' : 'DO', 'Field 5':'Salinity'}
-        all_data = {fieldname[f'Field {i}']: get_field_data(i) for i in range(1, 6)}
-        print(all_data)
-        print(float(all_data['pH'][0]))
-
-
-        #---------------------------------------------------------------------------------
-
+    if option2 == 'Rice':
         import plotly.graph_objects as go
+        from plotly.subplots import make_subplots
+        import time
 
-        fig_ph = go.Figure(go.Indicator(
-            domain={'x': [0, 1], 'y': [0, 1]},
-            value=float(all_data['pH'][0]),
-            mode="gauge+number+delta",
-            title={'text': "pH"},
-            delta={'reference': 7 , },
-            gauge={'axis': {'range': [None, 14] ,},
-                   'bar': {'color': "black"},
-                   'steps': [
-                       {'range': [0, 5], 'color': "red"},
-                       {'range': [5, 6], 'color': "orange"},
-                       {'range': [6, 8.5], 'color': "green"},
-                   {'range': [8.5, 9], 'color': "orange"},
-                   {'range': [9, 14], 'color': "red"}],
-                   'threshold': {'line': {'color': "red", 'width': 4}, 'thickness': 0.75, 'value': 490}}))
+        # Function to create an animated gauge-style progress bar using Plotly
+        def animated_gauge_progress_bar(value, title):
+            if 1 <= value <= 10:
+                bar_color = "red"
+            else:
+                bar_color = "#4CAF50"  # Default color for other values
 
-        fig_temp = go.Figure(go.Indicator(
-            domain={'x': [0, 1], 'y': [0, 1]},
-            value=float(all_data['Temperature'][0]),
-            mode="gauge+number+delta",
-            title={'text': "Temperature"},
-            delta={'reference': 30, },
-            gauge={'axis': {'range': [None, 40], },
-                   'bar': {'color': "black"},
-                   'steps': [
-                       {'range': [0, 22], 'color': "red"},
-                       {'range': [22, 26], 'color': "orange"},
-                       {'range': [26, 32], 'color': "green"},
-                       {'range': [32, 35], 'color': "orange"},
-                       {'range': [35, 40], 'color': "red"}],
-                   'threshold': {'line': {'color': "red", 'width': 4}, 'thickness': 0.75, 'value': 490}}))
-
-        fig_Amo = go.Figure(go.Indicator(
-            domain={'x': [0, 1], 'y': [0, 1]},
-            value=float(all_data['Ammonia'][0]),
-            mode="gauge+number+delta",
-            title={'text': "Ammonia"},
-            delta={'reference': 0.5, },
-            gauge={'axis': {'range': [None, 0.12], },
-                   'bar': {'color': "black"},
-                   'steps': [
-                       {'range': [0, 0.05], 'color': "red"},
-                       {'range': [0.05, 0.06], 'color': "orange"},
-                       {'range': [0.06, 0.08], 'color': "green"},
-                       {'range': [0.08, 1.2], 'color': "red"}],
-                   'threshold': {'line': {'color': "red", 'width': 4}, 'thickness': 0.75, 'value': 490}}))
-
-        fig_Do = go.Figure(go.Indicator(
-            domain={'x': [0, 1], 'y': [0, 1]},
-            value=float(all_data['DO'][0]),
-            mode="gauge+number+delta",
-            title={'text': "Do"},
-            delta={'reference': 9, },
-            gauge={'axis': {'range': [None, 20], },
-                   'bar': {'color': "black"},
-                   'steps': [
-                       {'range': [0, 4], 'color': "red"},
-                       {'range': [4, 9], 'color': "orange"},
-                       {'range': [9, 20], 'color': "green"}],
-                   'threshold': {'line': {'color': "red", 'width': 4}, 'thickness': 0.75, 'value': 490}}))
-
-        fig_Salinity = go.Figure(go.Indicator(
-            domain={'x': [0, 1], 'y': [0, 1]},
-            value=float(all_data['Salinity'][0]),
-            mode="gauge+number+delta",
-            title={'text': "Salinity"},
-            delta={'reference': 20, },
-            gauge={'axis': {'range': [None, 40], },
-                   'bar': {'color': "black"},
-                   'steps': [
-                       {'range': [0, 20], 'color': "orange"},
-                       {'range': [20, 35], 'color': "green"},
-                       {'range': [35, 37], 'color': "orange"},
-                       {'range': [37, 40], 'color': "red"}],
-                   'threshold': {'line': {'color': "red", 'width': 4}, 'thickness': 0.75, 'value': 490}}))
-
-        URL = f'https://api.thingspeak.com/channels/1649792/fields/1.json?api_key='
-        KEY = 'YOUR_API_KEY'
-        NEW_URL = URL + KEY
-
-        get_data = requests.get(NEW_URL).json()
-        channel_id = get_data['channel']['id']
-        field_data = get_data['feeds']
-        print(field_data[len(field_data) - 1]['created_at'])
-
-
-        html_content = f"""
-                                <div style="border: 2px solid #333333; padding:10px; border-radius:5px;">
-                                                    <h3 style="color:#333333;">Real-Time Monitoring</h3>
-                                                    <p>You can see the level of the nutrients at {field_data[len(field_data) - 1]['created_at']}</p>
-                                                </div>
-                                            """
-        st.markdown(html_content, unsafe_allow_html=True)
-        col1, col2, col3, col4, col5 = st.columns(5)
-        with col1:
-            st.plotly_chart(fig_ph,use_container_width=True , height = 500)
-        with col2:
-            st.plotly_chart(fig_temp,use_container_width=True)
-        with col3:
-            st.plotly_chart(fig_Amo,use_container_width=True ,height=20)
-        with col4:
-            st.plotly_chart(fig_Do,use_container_width=True ,height=20)
-        with col5:
-            st.plotly_chart(fig_Salinity,use_container_width=True ,height=20)
-
-        html_content = f"""
-                            <div style="border: 2px solid #333333; padding:10px; border-radius:5px;">
-                                                <h3 style="color:#333333;">Query</h3>
-                                                <p>You can see the trend of the metric base on the date that you can select.</p>
-                                            </div>
-                                        """
-        st.markdown(html_content, unsafe_allow_html=True)
-
-        col_1, col_2, col_3 = st.columns(3)
-        df = pd.DataFrame()
-        with col_1:
-            options = st.selectbox(
-                'Select the option',
-                ('Temperature', 'pH', 'Ammonia', 'DO','Salinity'))
-
-            fieldname2 = { 'Temperature':1, 'pH':2, 'Ammonia' :3 ,'DO':4, 'Salinity':5}
-            print(get_field_datas(fieldname2[options]))
-            df = get_field_datas(fieldname2[options])
-        with col_2:
-            startDate = st.selectbox(
-                'Select the Start Date',
-                (df['time'])
+            fig = make_subplots(
+                rows=1, cols=1,
+                specs=[[{'type': 'indicator'}]]
             )
-        with col_3:
-            endDate = st.selectbox(
-                'Select the End Date',
-                (df['time'])
+
+            fig.add_trace(go.Indicator(
+                mode="number+gauge+delta",
+                value=value,
+                domain={'x': [0, 1], 'y': [0, 1]},
+                delta={'reference': 50, 'position': 'top'},
+                gauge=dict(
+                    axis=dict(range=[0, 100]),
+                    bar=dict(color=bar_color),  # Set color dynamically
+                    bgcolor="white",
+                    borderwidth=2,
+                    bordercolor="gray",
+                    steps=[dict(range=[0, 100], color="lightgray")]
+                ),
+                title=dict(text=title, font=dict(size=20)),  # Set title directly within the trace
+            ))
+
+            fig.update_layout(
+                height=200,
+                margin=dict(l=10, r=10, b=10, t=30),
             )
-        mask = (df['time'] > startDate) & (df['time'] <= endDate)
-        p = px.line(df.loc[mask], x='time', y='value', title=options)
-        st.plotly_chart(p)
 
-    if option2 == "Pak choy":
-        data = getPakChoyData('waterPh')
+            return fig
 
-        import plotly.graph_objects as go
+        # Streamlit app
+        st.title("Animated Gauge-style Progress Bar with Plotly")
 
-        fig_ph = go.Figure(go.Indicator(
-            domain={'x': [0, 1], 'y': [0, 1]},
-            value=float(data.iloc[0]['value']),
-            mode="gauge+number+delta",
-            title={'text': "pH"},
-            delta={'reference': 7, },
-            gauge={'axis': {'range': [None, 14], },
-                   'bar': {'color': "black"},
-                   'steps': [
-                       {'range': [0, 5], 'color': "red"},
-                       {'range': [5, 6], 'color': "orange"},
-                       {'range': [6, 8.5], 'color': "green"},
-                       {'range': [8.5, 9], 'color': "orange"},
-                       {'range': [9, 14], 'color': "red"}],
-                   'threshold': {'line': {'color': "red", 'width': 4}, 'thickness': 0.75, 'value': 490}}))
+        progress_value = st.slider("Select progress value", 0, 100, 50)
+        title = "pH"
 
-        data = getPakChoyData('waterEc')
-        fig_ec = go.Figure(go.Indicator(
-            domain={'x': [0, 1], 'y': [0, 1]},
-            value=float(data.iloc[0]['value']),
-            mode="gauge+number+delta",
-            title={'text': "EC"},
-            delta={'reference': 7, },
-            gauge={'axis': {'range': [None, 14], },
-                   'bar': {'color': "black"},
-                   'steps': [
-                       {'range': [0, 5], 'color': "red"},
-                       {'range': [5, 6], 'color': "orange"},
-                       {'range': [6, 8.5], 'color': "green"},
-                       {'range': [8.5, 9], 'color': "orange"},
-                       {'range': [9, 14], 'color': "red"}],
-                   'threshold': {'line': {'color': "red", 'width': 4}, 'thickness': 0.75, 'value': 490}}))
+        chart_placeholder = st.empty()
 
-        data = getPakChoyData('waterSr')
-        fig_sr = go.Figure(go.Indicator(
-            domain={'x': [0, 1], 'y': [0, 1]},
-            value=float(data.iloc[0]['value']),
-            mode="gauge+number+delta",
-            title={'text': "Sr"},
-            delta={'reference': 7, },
-            gauge={'axis': {'range': [None, 14], },
-                   'bar': {'color': "black"},
-                   'steps': [
-                       {'range': [0, 5], 'color': "red"},
-                       {'range': [5, 6], 'color': "orange"},
-                       {'range': [6, 8.5], 'color': "green"},
-                       {'range': [8.5, 9], 'color': "orange"},
-                       {'range': [9, 14], 'color': "red"}],
-                   'threshold': {'line': {'color': "red", 'width': 4}, 'thickness': 0.75, 'value': 490}}))
-
-        data = getPakChoyData('waterOrp')
-        fig_orp = go.Figure(go.Indicator(
-            domain={'x': [0, 1], 'y': [0, 1]},
-            value=float(data.iloc[0]['value']),
-            mode="gauge+number+delta",
-            title={'text': "Orp"},
-            delta={'reference': 7, },
-            gauge={'axis': {'range': [None, 14], },
-                   'bar': {'color': "black"},
-                   'steps': [
-                       {'range': [0, 5], 'color': "red"},
-                       {'range': [5, 6], 'color': "orange"},
-                       {'range': [6, 8.5], 'color': "green"},
-                       {'range': [8.5, 9], 'color': "orange"},
-                       {'range': [9, 14], 'color': "red"}],
-                   'threshold': {'line': {'color': "red", 'width': 4}, 'thickness': 0.75, 'value': 490}}))
-
-        data = getPakChoyData('waterTds')
-        fig_tds = go.Figure(go.Indicator(
-            domain={'x': [0, 1], 'y': [0, 1]},
-            value=float(data.iloc[0]['value']),
-            mode="gauge+number+delta",
-            title={'text': "TDS"},
-            delta={'reference': 7, },
-            gauge={'axis': {'range': [None, 14], },
-                   'bar': {'color': "black"},
-                   'steps': [
-                       {'range': [0, 5], 'color': "red"},
-                       {'range': [5, 6], 'color': "orange"},
-                       {'range': [6, 8.5], 'color': "green"},
-                       {'range': [8.5, 9], 'color': "orange"},
-                       {'range': [9, 14], 'color': "red"}],
-                   'threshold': {'line': {'color': "red", 'width': 4}, 'thickness': 0.75, 'value': 490}}))
-
-        data = getPakChoyData('waterSalinity')
-        fig_Salinity = go.Figure(go.Indicator(
-            domain={'x': [0, 1], 'y': [0, 1]},
-            value=float(data.iloc[0]['value']),
-            mode="gauge+number+delta",
-            title={'text': "Salinity"},
-            delta={'reference': 7, },
-            gauge={'axis': {'range': [None, 14], },
-                   'bar': {'color': "black"},
-                   'steps': [
-                       {'range': [0, 5], 'color': "red"},
-                       {'range': [5, 6], 'color': "orange"},
-                       {'range': [6, 8.5], 'color': "green"},
-                       {'range': [8.5, 9], 'color': "orange"},
-                       {'range': [9, 14], 'color': "red"}],
-                   'threshold': {'line': {'color': "red", 'width': 4}, 'thickness': 0.75, 'value': 490}}))
-
-        data = getPakChoyData('waterTemperature')
-        fig_Temperature = go.Figure(go.Indicator(
-            domain={'x': [0, 1], 'y': [0, 1]},
-            value=float(data.iloc[0]['value']),
-            mode="gauge+number+delta",
-            title={'text': "Temperature"},
-            delta={'reference': 7, },
-            gauge={'axis': {'range': [None, 14], },
-                   'bar': {'color': "black"},
-                   'steps': [
-                       {'range': [0, 5], 'color': "red"},
-                       {'range': [5, 6], 'color': "orange"},
-                       {'range': [6, 8.5], 'color': "green"},
-                       {'range': [8.5, 9], 'color': "orange"},
-                       {'range': [9, 14], 'color': "red"}],
-                   'threshold': {'line': {'color': "red", 'width': 4}, 'thickness': 0.75, 'value': 490}}))
+        vla = 23
+        # Update the progress value with an animation
+        for value in range(0, vla, 1):
+            time.sleep(0.06)
+            animated_chart = animated_gauge_progress_bar(value, title)
+            chart_placeholder.plotly_chart(animated_chart, use_container_width=True)
+            st.empty()  # Clear the previous chart to create animation effect
 
 
-        html_content = f"""
-                                        <div style="border: 2px solid #333333; padding:10px; border-radius:5px;">
-                                                            <h3 style="color:#333333;">Real-Time Monitoring</h3>
-                                                            <p>You can see the level of the nutrients at {data.iloc[0]['time']}</p>
-                                                        </div>
-                                                    """
 
-        st.markdown(html_content, unsafe_allow_html=True)
-        col1, col2, col3, col4, col5 = st.columns(5)
-        with col1:
-            st.plotly_chart(fig_ph, use_container_width=True, height=500)
-        with col2:
-            st.plotly_chart(fig_ec, use_container_width=True, height=500)
-        with col3:
-            st.plotly_chart(fig_sr, use_container_width=True, height=500)
-        with col4:
-            st.plotly_chart(fig_orp, use_container_width=True, height=500)
-        with col5:
-            st.plotly_chart(fig_tds, use_container_width=True, height=500)
-        col1, col2, col3, col4, col5 = st.columns(5)
-        with col2:
-            st.plotly_chart(fig_Salinity, use_container_width=True, height=500)
-        with col3:
-            st.plotly_chart(fig_Temperature, use_container_width=True, height=500)
-        html_content = f"""
-                    <div style="border: 2px solid #333333; padding:10px; border-radius:5px;">
-                                        <h3 style="color:#333333;">Query</h3>
-                                        <p>You can see the trend of the metric base on the date that you can select.</p>
-                                    </div>
-                                """
-        st.markdown(html_content, unsafe_allow_html=True)
 
-        col_1 ,col_2, col_3 = st.columns(3)
-        df = pd.DataFrame()
-        with col_1:
-            optionsnutrient = st.selectbox(
-                'Select the metric',
-                ('waterTemperature', 'waterPh', 'waterSr', 'waterOrp', 'waterTds', 'waterSalinity'))
-            df = getPakChoyData(optionsnutrient)
-        with col_2:
-            startDate = st.selectbox(
-                'Select the Start Date',
-                (df['time'])
-            )
-        with col_3:
-            endDate = st.selectbox(
-                'Select the End Date',
-                (df['time'])
-            )
-        mask = (df['time'] > startDate) & (df['time'] <= endDate)
-        p = px.line(df.loc[mask], x='time', y='value', title=optionsnutrient)
-        st.plotly_chart(p)

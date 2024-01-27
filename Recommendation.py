@@ -339,87 +339,98 @@ def RecommendationConstructor():
 
     if selectfarm =="Aqua":
         st.header('')
+        all_data = pd.read_csv('Dataset/Aqua/feed.csv')
+        html = f"""
 
-    if selectfarm =="Pak choy":
-        st.markdown(printCostumTitleAndContenth1("Nutrient recovery recommendation", ""), unsafe_allow_html=True)
-
-        html_content = f"""
-                                <h3 style="color:#333333;">Current Plantation</h3>
-                                <table style="border-collapse: collapse; width: 100%;">
-    <tr style="border: 1px solid #dddddd; text-align: left; padding: 8px;">
-        <th style="border: 1px solid #dddddd; padding: 8px;">Generation</th>
-        <th style="border: 1px solid #dddddd; padding: 8px;">Pot number</th>
-        <th style="border: 1px solid #dddddd; padding: 8px;">Current Plant Height(mm)</th>
-        <th style="border: 1px solid #dddddd; padding: 8px;">Current Leaves Count(mm)</th>
-        <th style="border: 1px solid #dddddd; padding: 8px;">Current Longest Leaf(mm)</th>
-        <th style="border: 1px solid #dddddd; padding: 8px;">Predicted Plant Height(mm)</th>
-        <th style="border: 1px solid #dddddd; padding: 8px;">Predicted Leaves Count(mm)</th>
-        <th style="border: 1px solid #dddddd; padding: 8px;">Predicted Longest Leaf(mm)</th>
-        <th style="border: 1px solid #dddddd; padding: 8px;">Time Line(week)</th>
-        <th style="border: 1px solid #dddddd; padding: 8px;">Estimated Harvest Weight(gram)</th>
-    </tr>
-    <tr style="border: 1px solid #dddddd; text-align: left; padding: 8px;">
-        <th style="border: 1px solid #dddddd; padding: 8px;">3</th>
-        <th style="border: 1px solid #dddddd; padding: 8px;">1</th>
-        <th style="border: 1px solid #dddddd; padding: 8px;">130</th>
-        <th style="border: 1px solid #dddddd; padding: 8px;">5</th>
-        <th style="border: 1px solid #dddddd; padding: 8px;">80</th>
-        <th style="border: 1px solid #dddddd; padding: 8px;">260</th>
-        <th style="border: 1px solid #dddddd; padding: 8px;">11</th>
-        <th style="border: 1px solid #dddddd; padding: 8px;">170</th>
-        <th style="border: 1px solid #dddddd; padding: 8px;">2/4</th>
-        <th style="border: 1px solid #dddddd; padding: 8px;">670</th>
-    </tr>
-    <tr style="border: 1px solid #dddddd; text-align: left; padding: 8px;">
-        <th style="border: 1px solid #dddddd; padding: 8px;">3</th>
-        <th style="border: 1px solid #dddddd; padding: 8px;">2</th>
-        <th style="border: 1px solid #dddddd; padding: 8px;">145</th>
-        <th style="border: 1px solid #dddddd; padding: 8px;">6</th>
-        <th style="border: 1px solid #dddddd; padding: 8px;">90</th>
-        <th style="border: 1px solid #dddddd; padding: 8px;">240</th>
-        <th style="border: 1px solid #dddddd; padding: 8px;">10</th>
-        <th style="border: 1px solid #dddddd; padding: 8px;">130</th>
-        <th style="border: 1px solid #dddddd; padding: 8px;">2/4</th>
-        <th style="border: 1px solid #dddddd; padding: 8px;">690</th>
-    </tr>
-    <tr style="border: 1px solid #dddddd; text-align: left; padding: 8px;">
-        <th style="border: 1px solid #dddddd; padding: 8px;">4</th>
-        <th style="border: 1px solid #dddddd; padding: 8px;">1</th>
-        <th style="border: 1px solid #dddddd; padding: 8px;">125</th>
-        <th style="border: 1px solid #dddddd; padding: 8px;">4</th>
-        <th style="border: 1px solid #dddddd; padding: 8px;">40</th>
-        <th style="border: 1px solid #dddddd; padding: 8px;">210</th>
-        <th style="border: 1px solid #dddddd; padding: 8px;">11</th>
-        <th style="border: 1px solid #dddddd; padding: 8px;">90</th>
-        <th style="border: 1px solid #dddddd; padding: 8px;">1/4</th>
-        <th style="border: 1px solid #dddddd; padding: 8px;">890</th>
-    </tr>
-    <tr style="border: 1px solid #dddddd; text-align: left; padding: 8px;">
-        <th style="border: 1px solid #dddddd; padding: 8px;">4</th>
-        <th style="border: 1px solid #dddddd; padding: 8px;">2</th>
-        <th style="border: 1px solid #dddddd; padding: 8px;">95</th>
-        <th style="border: 1px solid #dddddd; padding: 8px;">5</th>
-        <th style="border: 1px solid #dddddd; padding: 8px;">65</th>
-        <th style="border: 1px solid #dddddd; padding: 8px;">230</th>
-        <th style="border: 1px solid #dddddd; padding: 8px;">13</th>
-        <th style="border: 1px solid #dddddd; padding: 8px;">110</th>
-        <th style="border: 1px solid #dddddd; padding: 8px;">1/4</th>
-        <th style="border: 1px solid #dddddd; padding: 8px;">900</th>
-    </tr>
-</table>    
+                        <div style="border: 2px solid #333333; padding:10px; border-radius:5px;">
+                                <h3 style="color:#333333;">Suggestions</h3>
+                                <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
+                            <tr>
+                                <th style="border: 2px solid #000; padding: 10px;"></th>
+                                <th style="border: 2px solid #000; padding: 10px;">pH</th>
+                                <th style="border: 2px solid #000; padding: 10px;">Ammonia</th>
+                                <th style="border: 2px solid #000; padding: 10px;">DO</th>
+                                <th style="border: 2px solid #000; padding: 10px;">Salinity</th>
+                            <tr>
+                            <td style='border: 2px solid #000; padding: 10px;'>Benchmark</td>
+                            <td style='border: 2px solid #000; padding: 10px;'>7.5</td>
+                            <td style='border: 2px solid #000; padding: 10px;'>0.2</td>
+                            <td style='border: 2px solid #000; padding: 10px;'>7</td>
+                            <td style='border: 2px solid #000; padding: 10px;'>33</td>
+                            </tr>
+                            <tr>
+                            <td style='border: 2px solid #000; padding: 10px;'>Current</td>
+                            <td style='border: 2px solid #000; padding: 10px;'>{float(all_data['pH'][0])}</td>
+                            <td style='border: 2px solid #000; padding: 10px;'>{float(all_data['Ammonia'][0])}</td>
+                            <td style='border: 2px solid #000; padding: 10px;'>{float(all_data['DO'][0])}</td>
+                            <td style='border: 2px solid #000; padding: 10px;'>{float(all_data['Salinity'][0])}</td>
+                            </tr>
+                            <tr><td style='border: 2px solid #000; padding: 10px;'>Intervention plan</td>
+                            <td style='border: 2px solid #000; padding: 10px;'>{round(7.5 - float(all_data['pH'][0]), 2)}</td>
+                            <td style='border: 2px solid #000; padding: 10px;'>{round(0.2 - float(all_data['Ammonia'][0]), 2)}</td>
+                            <td style='border: 2px solid #000; padding: 10px;'>{round(7 - float(all_data['DO'][0]), 2)}</td>
+                            <td style='border: 2px solid #000; padding: 10px;'>{round(33 - float(all_data['Salinity'][0]), 2)}</td>
+                            </tr>
+                            </table>
                             </div>
                         """
 
-        st.markdown(html_content, unsafe_allow_html=True)
+        st.write("")
+        st.markdown(html, unsafe_allow_html=True)
+        st.write("")
+        col11, col22 = st.columns(2)
+        with col11:
+            html_content = f"""
+                                <div style="border: 2px solid #333333; padding:10px; border-radius:5px;">
+                                                    <h3 style="color:#333333;">Yield Report</h3>
+                                                    <p style="color:green;">Predicted Average Weight for Fish: 2.4 gram (% 9 lower than the best, )</p>
+                                                </div>
+                                            """
+            st.markdown(html_content, unsafe_allow_html=True)
+
+        with col22:
+            html_content = f"""
+            <div style="border: 2px solid #333333; padding:10px; border-radius:5px;">
+                                <h3 style="color:#333333;">Yield Risk Predicted:</h3>
+                                <p style="color:green ;">No Risk</p>
+                            </div>
+                        """
+            st.markdown(html_content, unsafe_allow_html=True)
+
+        html_content_with_border = f"""
+                            <div style="border: 2px solid #333333; padding:10px; border-radius:5px;">
+                                <div style="border: 2px solid #333333; padding:10px; border-radius:5px;">
+                                <h3 style="color:#333333;">Yield Report</h3>
+                                <p style="color:green;">Predicted Average Weight Fish is 2.4KG after Aplly the Intervention plan (% 4 lower than the best.)</p>
+                                <table style="border-collapse: collapse; width: 100%;">
+                                </div>
+                                <h3>Crop Traits</h3>
+                                <table style="border-collapse: collapse; width: 100%;">
+            <tr style="border: 1px solid #dddddd; text-align: left; padding: 8px;">
+                <th style="border: 1px solid #dddddd; padding: 8px;">Weight (KG)</th>
+                <th style="border: 1px solid #dddddd; padding: 8px;">Length (CM)</th>
+            </tr>
+            <tr style="border: 1px solid #dddddd; text-align: left; padding: 8px;">
+                <th style="border: 1px solid #dddddd; padding: 8px;">2.4</th>
+                <th style="border: 1px solid #dddddd; padding: 8px;">23</th>
+            </tr>
+                            </div>
+                        """
+
+        col1, col2, col3 = st.columns(3)
+
+
+        if col2.button("Apply Intervention plan"):
+            st.markdown(html_content_with_border, unsafe_allow_html=True)
+
+
+    if selectfarm =="Pak choy":
         col1, col2, col3 = st.columns(3)
         with col1:
-            generation = st.selectbox('Select the current generation' , ('Generation 3', 'Generation 4'))
-
-        with col2:
             pot = st.selectbox('Select the Pot', ('Pot 1', 'Pot 2'))
-
+        generation = 'Generation 3'
         col11, col22 = st.columns(2)
-        data = {'Generation 3':{'Pot 1': 670,  'Pot 2': 690} , 'Generation 4':{'Pot 1':890 ,  'Pot 2':900}}
+        data = {'Generation 3':{'Pot 1': 670,  'Pot 2': 690}}
         percentage = round(((((1100 - data[generation][pot]) / 1100)) * 100), 2)
         risk = ""
         color = ""
@@ -515,9 +526,7 @@ def RecommendationConstructor():
                 """
         st.write("")
         st.markdown(html, unsafe_allow_html=True)
-
         st.write('')
-
         html_content_with_border = f"""
                     <div style="border: 2px solid #333333; padding:10px; border-radius:5px;">
                         <div style="border: 2px solid #333333; padding:10px; border-radius:5px;">
@@ -545,8 +554,6 @@ def RecommendationConstructor():
     </tr>
                     </div>
                 """
-
-
         col1, col2, col3 = st.columns(3)
         if col2.button("Apply Intervention plan"):
             st.markdown(html_content_with_border, unsafe_allow_html=True)
