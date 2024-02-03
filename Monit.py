@@ -240,7 +240,7 @@ def MonitConstructor():
     if option2 == "Pak choy":
 
         import  pandas as pd
-        df = pd.read_csv('Generation3_pot1.csv')
+        df = pd.read_csv('Dataset/Pock choy /Generation3_pot1.csv')
         col1 , col2 = st.columns(2)
         with col1:
             st.markdown(printWithTitleAndBoarderwithoutTable('Current Health Status Generation 3', 'Farm health Status: Good (7/10)', ) , unsafe_allow_html=True)
@@ -252,10 +252,10 @@ def MonitConstructor():
 
         if optionpot == 1:
         # Replace 'Dataset/Pock choy /Generation3_pot1.csv' with the actual path to your CSV file
-            file_path = 'Generation3_pot1.csv'
+            file_path = 'Dataset/Pock choy /Generation3_pot1.csv'
 
         if optionpot == 2 :
-            file_path = 'Generation3_pot2.csv'
+            file_path = 'Dataset/Pock choy /Generation3_pot2.csv'
         # Read the CSV file into a pandas DataFrame
         df = pd.read_csv(file_path)
 
@@ -362,7 +362,7 @@ def MonitConstructor():
             # Display CSS styles
             st.markdown(css_styles, unsafe_allow_html=True)
 
-            df = pd.read_csv('Generation3_pot1.csv')
+            df = pd.read_csv('Dataset/Pock choy /Generation3_pot1.csv')
             # Create button grid
             button_container = f"""<div style="border: 2px solid #333333; padding:10px; border-radius:5px;">     <p style='text-align: center'>Pot  {optionpot}</p>  <div class='button-container'>"""
             for key, value in dataframe.items():
@@ -375,7 +375,7 @@ def MonitConstructor():
             st.markdown(button_container, unsafe_allow_html=True)
 
         with col2:
-            df = pd.read_csv('Generation3_pot1.csv')
+            df = pd.read_csv('Dataset/Pock choy /Generation3_pot1.csv')
             subpot = st.selectbox('Select the SubPot Number', df['subpotnumber'].unique())
             filtered_df = df[df['subpotnumber'] == subpot]
             html_content = f"""
@@ -522,7 +522,7 @@ def MonitConstructor():
             color = 'green' if val == df['plantheight'].max() else 'orange' if val > df['plantheight'].mean() else 'red'
             return f'background-color: {color}'
         st.write('')
-        df = pd.read_csv('Generation3_pot1.csv')
+        df = pd.read_csv('Dataset/Pock choy /Generation3_pot1.csv')
         df1 = df.iloc[:20 , :]
         df2 = df.iloc[20: , :]
 
