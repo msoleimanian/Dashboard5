@@ -137,9 +137,42 @@ def digitaltwinconstructor():
 
     if option2 == "Pak choy":
 
+        col1, col2, col3 = st.columns(3)
+        with col1:
+            pot = st.selectbox('Select the Pot', ('Pot 1', 'Pot 2'))
+        generation = 'Generation 3'
+        col11, col22 = st.columns(2)
+        data = {'Generation 3': {'Pot 1': 670, 'Pot 2': 690}}
+        percentage = round(((((1100 - data[generation][pot]) / 1100)) * 100), 2)
+        risk = ""
+        color = ""
+        if percentage < 20:
+            risk = "No Risk"
+            color = "green"
+        elif (percentage <= 25):
+            risk = "Low Risk"
+            color = "orange"
+        else:
+            risk = "High Risk"
+            color = "red"
 
+        with col11:
+            html_content = f"""
+                                        <div style="border: 2px solid #333333; padding:10px; border-radius:5px;">
+                                                            <h3 style="color:#333333;">Yield Report</h3>
+                                                            <p style="color:{color};">Predicted Average Weight for Generation{generation} at Week4: {data[generation][pot]} gram (% {percentage} lower than the best, Best weight grain is 37 gram.)</p>
+                                                        </div>
+                                                    """
+            st.markdown(html_content, unsafe_allow_html=True)
 
-
+        with col22:
+            html_content = f"""
+                    <div style="border: 2px solid #333333; padding:10px; border-radius:5px;">
+                                        <h3 style="color:#333333;">Yield Risk Predicted:</h3>
+                                        <p style="color:{color};">{risk}</p>
+                                    </div>
+                                """
+            st.markdown(html_content, unsafe_allow_html=True)
 
 
         import  pandas as pd
