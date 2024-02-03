@@ -257,7 +257,7 @@ def SimulationConstructor():
         }
 
         df = pd.DataFrame(data)
-        filename = f'Dataset/Pock choy /Generation{generation}_Pot{pot_number}_Simulation.csv'
+        filename = f'Dataset/Pock choy /Generation{generation}_pot{pot_number}_Simulation.csv'
         df.to_csv(filename, index=False)
 
         return df
