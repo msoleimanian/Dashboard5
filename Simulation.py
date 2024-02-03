@@ -329,10 +329,10 @@ def SimulationConstructor():
 
     if optionpot == 1:
         # Replace 'Dataset/Pock choy /Generation3_pot1.csv' with the actual path to your CSV file
-        file_path = 'Dataset/Pock choy /Generation3_Pot1_Simulation.csv'
+        file_path = 'Dataset/Pock choy /Generation3_pot1_Simulation.csv'
 
     if optionpot == 2:
-        file_path = 'Dataset/Pock choy /Generation3_Pot2_Simulation.csv'
+        file_path = 'Dataset/Pock choy /Generation3_pot2_Simulation.csv'
     # Read the CSV file into a pandas DataFrame
     df = pd.read_csv(file_path)
 
@@ -387,7 +387,7 @@ def SimulationConstructor():
         # Display CSS styles
         st.markdown(css_styles, unsafe_allow_html=True)
 
-        df = pd.read_csv('Dataset/Pock choy /Generation3_Pot1_Simulation.csv')
+        df = pd.read_csv('Dataset/Pock choy /Generation3_pot1_Simulation.csv')
         # Create button grid
         button_container = f"""<div style="border: 2px solid #333333; padding:10px; border-radius:5px;">     <p style='text-align: center'>Pot  {optionpot}</p>  <div class='button-container'>"""
         for key, value in dataframe.items():
@@ -400,7 +400,7 @@ def SimulationConstructor():
         st.markdown(button_container, unsafe_allow_html=True)
 
     with col2:
-        df = pd.read_csv('Dataset/Pock choy /Generation3_Pot1_Simulation.csv')
+        df = pd.read_csv('Dataset/Pock choy /Generation3_pot1_Simulation.csv')
         selectpot = st.selectbox('Select the SubPot Number', range(1, 41))
         subpot = f"SubPot{selectpot}"
         filtered_df = df[df['subpotnumber'] == subpot]
