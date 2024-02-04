@@ -372,51 +372,7 @@ def exploreConstructor():
             st.plotly_chart(fig)
 
 
-        dfbest = pd.read_csv(f'Dataset/Pock choy /PackchoyGeneration{option}.csv')
-        dfbest = dfbest.query(f"""Pot == {optionplot}""")
-        # Calculate the day count for each unique date
-        dfbest['Day'] = dfbest['Date'].rank(method='dense').astype(int)
-        # Keep only the relevant columns
-        dfbest = dfbest[['Day', 'Pot', 'SubPot', 'EC', 'pH', 'Leaves Count', 'Longest Leaf', 'Plant Height(mm)']]
-        # Display the modified DataFrame
-        print("####################")
-        print(dfbest)
-        nutrients = ['EC', 'pH']
-        fnbest2 = dfbest.query(f"""Day == 2""")
-        fnbest3 = dfbest.query(f"""Day == 3""")
-        fnbest4 = dfbest.query(f"""Day == 4""")
-        fnbest5 = dfbest.query(f"""Day == 5""")
-        fnbest6 = dfbest.query(f"""Day == 6""")
-        fnbest7 = dfbest.query(f"""Day == 7""")
-        fnbest8 = dfbest.query(f"""Day == 8""")
-        fnbest9 = dfbest.query(f"""Day == 9""")
-        fnbest10 = dfbest.query(f"""Day == 10""")
-        fnbest11 = dfbest.query(f"""Day == 11""")
-        for i in range(2):
-            n = nutrients[i]
-            nutrient_data = {f'{n} generation{option} pot{optionplot}': [fnbest2[nutrients[i]].values[0],
-                                                                         fnbest3[nutrients[i]].values[0],
-                                                                         fnbest4[nutrients[i]].values[0],
-                                                                         fnbest5[nutrients[i]].values[0],
-                                                                         fnbest6[nutrients[i]].values[0],
-                                                                         fnbest7[nutrients[i]].values[0],
-                                                                         fnbest8[nutrients[i]].values[0],
-                                                                         fnbest9[nutrients[i]].values[0],
-                                                                         fnbest10[nutrients[i]].values[0],
-                                                                         fnbest11[nutrients[i]].values[0]]}
-
-            # Create a DataFrame with the dictionary
-            df = pd.DataFrame.from_dict(nutrient_data, orient='index', columns=[2, 3, 4, 5, 6, 7, 8, 9, 10, 11])
-
-            # Animated line chart with Plot
-            fig = px.line(df.transpose(), x=df.columns, y=df.index,
-                          labels={'value': 'Nutrient Level', 'variable': 'Nutrient'},
-                          title=n)
-            fig.update_layout(xaxis_title='DAYS')
-            fig.update_traces(mode='lines+markers')
-
-            # Display the animated chart
-            st.plotly_chart(fig)
+        
 
         html_content = f"""
                                     <div style="border: 2px solid #333333; padding:10px; border-radius:5px;">
@@ -426,30 +382,6 @@ def exploreConstructor():
                                                 """
         st.markdown(html_content, unsafe_allow_html=True)
 
-
-        # Read data from CSV file
-        df = pd.read_csv('Dataset/Pock choy /PackchoyGeneration2.csv')
-
-        # Convert 'Date' column to datetime format
-        # Streamlit app
-        st.title('Pak Choy Senesor values Over Time')
-
-        # Selecting Pot and SubPot
-        selected_pot = st.selectbox('Select a Pot', df['Pot'].unique())
-        selected_subpot = st.selectbox('Select a SubPot', df['SubPot'].unique())
-
-        # Filter DataFrame based on selected Pot and SubPot
-        filtered_df = df[(df['Pot'] == selected_pot) & (df['SubPot'] == selected_subpot)]
-
-        # Selecting trait
-        # Plotting with Plotly Express
-        fig_ec = px.line(filtered_df, x='Date', y='EC', markers=True, title='Trend of EC Over Time')
-        fig_ec.update_layout(xaxis_title='Date', yaxis_title='EC')
-        st.plotly_chart(fig_ec)
-
-        fig_ph = px.line(filtered_df, x='Date', y='pH', markers=True, title='Trend of pH Over Time')
-        fig_ph.update_layout(xaxis_title='Date', yaxis_title='pH')
-        st.plotly_chart(fig_ph)
 
         col_1, col_2, col_3 = st.columns(3)
         df = pd.DataFrame()
