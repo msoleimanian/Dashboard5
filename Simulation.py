@@ -314,23 +314,107 @@ def SimulationConstructor():
                                              'unknown')  # Default to 'unknown' if status is not one of the specified values
             pot_color_dict[pot_number] = color
         dataframe = pot_color_dict
-        col1, col2 = st.columns(2)
+        import random
+
+        # Initialize session state
+        if 'slider_values' not in st.session_state:
+            st.session_state.slider_values = {
+                'temperature': 25,
+                'salinity': 25,
+                'tds': 500,
+                'orp': 500,
+                'sr': 50,
+                'ec': 50,
+                'ph': 7
+            }
+
+        if 'random_numbers' not in st.session_state:
+            st.session_state.random_numbers = {
+                'random_ph_week3': round(random.uniform(6.5, 8.5), 2),
+                'random_ammonia_week3': round(random.uniform(-5, 5), 2),
+                'random_do_week3': round(random.uniform(-1, 1), 2),
+                'random_salinity_week3': round(random.uniform(30, 40), 2),
+                'random_ph_week4': round(random.uniform(15, 20), 2),
+                'random_ammonia_week4': round(random.uniform(-5, 5), 2),
+                'random_do_week4': round(random.uniform(5, 15), 2),
+                'random_salinity_week4': round(random.uniform(20, 30), 2),
+            }
 
         # Sliders in the first column
-        temperature = col1.slider("Temperature (°C)", min_value=0, max_value=100, value=25, step=1)
-        salinity = col1.slider("Salinity", min_value=0, max_value=50, value=25, step=1)
-        tds = col1.slider("TDS (ppm)", min_value=0, max_value=1000, value=500, step=10)
+        col1, col2 = st.columns(2)
+        temperature = col1.slider("Temperature (°C)", min_value=0, max_value=100,
+                                  value=st.session_state.slider_values['temperature'], step=1)
+        salinity = col1.slider("Salinity", min_value=0, max_value=50, value=st.session_state.slider_values['salinity'],
+                               step=1)
+        tds = col1.slider("TDS (ppm)", min_value=0, max_value=1000, value=st.session_state.slider_values['tds'],
+                          step=10)
 
         # Sliders in the second column
-        orp = col2.slider("ORP (mV)", min_value=0, max_value=1000, value=500, step=10)
-        sr = col2.slider("Sr", min_value=0, max_value=100, value=50, step=1)
-        ec = col2.slider("EC (µS/cm)", min_value=0, max_value=100, value=50, step=1)
-        ph = col2.slider("pH", min_value=0, max_value=14, value=7, step=1)
+        orp = col2.slider("ORP (mV)", min_value=0, max_value=1000, value=st.session_state.slider_values['orp'], step=10)
+        sr = col2.slider("Sr", min_value=0, max_value=100, value=st.session_state.slider_values['sr'], step=1)
+        ec = col2.slider("EC (µS/cm)", min_value=0, max_value=100, value=st.session_state.slider_values['ec'], step=1)
+        ph = col2.slider("pH", min_value=0, max_value=14, value=st.session_state.slider_values['ph'], step=1)
+
+        # Check if slider values have changed
+        if (
+                temperature != st.session_state.slider_values['temperature'] or
+                salinity != st.session_state.slider_values['salinity'] or
+                tds != st.session_state.slider_values['tds'] or
+                orp != st.session_state.slider_values['orp'] or
+                sr != st.session_state.slider_values['sr'] or
+                ec != st.session_state.slider_values['ec'] or
+                ph != st.session_state.slider_values['ph']
+        ):
+            # Generate new random numbers
+            st.session_state.random_numbers = {
+                'random_ph_week3': round(random.uniform(6.5, 8.5), 2),
+                'random_ammonia_week3': round(random.uniform(-5, 5), 2),
+                'random_do_week3': round(random.uniform(-1, 1), 2),
+                'random_salinity_week3': round(random.uniform(30, 40), 2),
+                'random_ph_week4': round(random.uniform(15, 20), 2),
+                'random_ammonia_week4': round(random.uniform(-5, 5), 2),
+                'random_do_week4': round(random.uniform(5, 15), 2),
+                'random_salinity_week4': round(random.uniform(20, 30), 2),
+            }
+
+            # Generate and save logical data for Generation 3, Pot 1
+            generation_3_pot_1 = generate_logical_random_data(num_subplots=40, generation=3, pot_number=1)
+            # st.write('Generated and Saved CSV for Generation 3, Pot 1:', generation_3_pot_1)
+
+            # Generate and save logical data for Generation 3, Pot 2
+            generation_3_pot_2 = generate_logical_random_data(num_subplots=40, generation=3, pot_number=2)
+            # st.write('Generated and Saved CSV for Generation 3, Pot 2:', generation_3_pot_2)
+
+        # Update session state with current slider values
+        st.session_state.slider_values = {
+            'temperature': temperature,
+            'salinity': salinity,
+            'tds': tds,
+            'orp': orp,
+            'sr': sr,
+            'ec': ec,
+            'ph': ph
+        }
+
+        # Access the random numbers from the session state
+        random_ph_week3 = st.session_state.random_numbers['random_ph_week3']
+        random_ammonia_week3 = st.session_state.random_numbers['random_ammonia_week3']
+        random_do_week3 = st.session_state.random_numbers['random_do_week3']
+        random_salinity_week3 = st.session_state.random_numbers['random_salinity_week3']
+
+        random_ph_week4 = st.session_state.random_numbers['random_ph_week4']
+        random_ammonia_week4 = st.session_state.random_numbers['random_ammonia_week4']
+        random_do_week4 = st.session_state.random_numbers['random_do_week4']
+        random_salinity_week4 = st.session_state.random_numbers['random_salinity_week4']
+
 
 
         col1 , col2 , col3 , col4, col5  = st.columns(5)
         import time
-        if col3.button('_______Apply_______'):
+        import random
+        apply = col3.button('_______Apply_______')
+
+        if apply and False:
             # Generate and save logical data for Generation 3, Pot 1
             generation_3_pot_1 = generate_logical_random_data(num_subplots=40, generation=3, pot_number=1)
             #st.write('Generated and Saved CSV for Generation 3, Pot 1:', generation_3_pot_1)
@@ -448,4 +532,48 @@ def SimulationConstructor():
                         </div>
                         """
             st.markdown(html_content, unsafe_allow_html=True)
+
+        st.write('')
+
+        import random
+
+        # Your Streamlit app code
+        # Assume you have other Streamlit components and logic here
+
+        # Generate random numbers for the table
+
+
+        # HTML code with randomly generated numbers
+        html = f"""
+        <div style="border: 2px solid #333333; padding:10px; border-radius:5px;">
+            <h3 style="color:#333333;">Weekly Suggestions</h3>
+            <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
+                <tr>
+                    <th style="border: 2px solid #000; padding: 10px;"></th>
+                    <th style="border: 2px solid #000; padding: 10px;">pH</th>
+                    <th style="border: 2px solid #000; padding: 10px;">Ammonia</th>
+                    <th style="border: 2px solid #000; padding: 10px;">DO</th>
+                    <th style="border: 2px solid #000; padding: 10px;">Salinity</th>
+                </tr>
+                <tr>
+                    <td style='border: 2px solid #000; padding: 10px;'>week3</td>
+                    <td style='border: 2px solid #000; padding: 10px;'>{random_ph_week3}</td>
+                    <td style='border: 2px solid #000; padding: 10px;'>{random_ammonia_week3}</td>
+                    <td style='border: 2px solid #000; padding: 10px;'>{random_do_week3}</td>
+                    <td style='border: 2px solid #000; padding: 10px;'>{random_salinity_week3}</td>
+                </tr>
+                <tr>
+                    <td style='border: 2px solid #000; padding: 10px;'>week4</td>
+                    <td style='border: 2px solid #000; padding: 10px;'>{random_ph_week4}</td>
+                    <td style='border: 2px solid #000; padding: 10px;'>{random_ammonia_week4}</td>
+                    <td style='border: 2px solid #000; padding: 10px;'>{random_do_week4}</td>
+                    <td style='border: 2px solid #000; padding: 10px;'>{random_salinity_week4}</td>
+                </tr>
+            </table>
+        </div>
+        """
+
+        # Display the HTML
+        st.write(html, unsafe_allow_html=True)
+
 

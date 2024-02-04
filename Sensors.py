@@ -277,7 +277,7 @@ def exploreConstructor():
         df = pd.read_csv(f'Dataset/Rice/Season{option}.csv')
         st.header(f"Plot {optionplot}")
         df = df.query(f"""Plot == 'P{optionplot}'""")
-        
+
 
         dfn = pd.read_csv(f'Dataset/Rice/N.csv')
 
