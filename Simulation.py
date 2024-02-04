@@ -222,218 +222,230 @@ def SimulationConstructor():
     import pandas as pd
     import numpy as np
 
-    def generate_logical_random_data(num_subplots, generation, pot_number):
+    option2 = option_menu(None, ["Pak choy", "Rice", "Aqua"],
+                          menu_icon="forward", default_index=0, orientation="horizontal",
+                          styles={
+                              "container": {"padding": "0!important", "background-color": "#fafafa"},
+                              "icon": {"color": "orange", "font-size": "15px"},
+                              "nav-link": {"font-size": "15px", "text-align": "right", "margin": "0px",
+                                           "--hover-color": "#eee", },
+                              "nav-link-selected": {"background-color": "green"},
+                          }
+                          )
+    if option2 == "Pak choy":
 
-        subpot_numbers = [f'SubPot{i + 1}' for i in range(num_subplots)]
+        def generate_logical_random_data(num_subplots, generation, pot_number):
 
-        # Set max values
-        max_plant_height = 167
-        max_leaf_count = 7
-        max_longest_leaf = 110
+            subpot_numbers = [f'SubPot{i + 1}' for i in range(num_subplots)]
 
-        # Generate one random value for plant height
-        reference_plant_height = np.random.uniform(0.9 * max_plant_height, max_plant_height)
+            # Set max values
+            max_plant_height = 167
+            max_leaf_count = 7
+            max_longest_leaf = 110
 
-        # Generate traits based on the reference plant height
-        plant_heights = np.round(
-            np.random.uniform(0.9 * reference_plant_height, reference_plant_height, size=num_subplots))
-        longest_leaves = np.round(np.random.uniform(0.9 * max_longest_leaf, max_longest_leaf, size=num_subplots))
-        leaf_counts = np.round(np.random.uniform(0.9 * max_leaf_count, max_leaf_count, size=num_subplots))
+            # Generate one random value for plant height
+            reference_plant_height = np.random.uniform(0.9 * max_plant_height, max_plant_height)
 
-        # Determine status based on percentage distribution
-        num_good = int(0.23 * num_subplots)
-        num_normal = int(0.13 * num_subplots)
-        num_bad = num_subplots - num_good - num_normal
+            # Generate traits based on the reference plant height
+            plant_heights = np.round(
+                np.random.uniform(0.9 * reference_plant_height, reference_plant_height, size=num_subplots))
+            longest_leaves = np.round(np.random.uniform(0.9 * max_longest_leaf, max_longest_leaf, size=num_subplots))
+            leaf_counts = np.round(np.random.uniform(0.9 * max_leaf_count, max_leaf_count, size=num_subplots))
 
-        statuses = np.array(['Good'] * num_good + ['Normal'] * num_normal + ['Bad'] * num_bad)
-        np.random.shuffle(statuses)
+            # Determine status based on percentage distribution
+            num_good = int(0.23 * num_subplots)
+            num_normal = int(0.13 * num_subplots)
+            num_bad = num_subplots - num_good - num_normal
 
-        data = {
-            'subpotnumber': subpot_numbers,
-            'longestleaf': longest_leaves,
-            'plantheight': plant_heights,
-            'leafcount': leaf_counts,
-            'status': statuses
-        }
+            statuses = np.array(['Good'] * num_good + ['Normal'] * num_normal + ['Bad'] * num_bad)
+            np.random.shuffle(statuses)
 
-        df = pd.DataFrame(data)
-        filename = f'Dataset/Pock choy /Generation{generation}_pot{pot_number}_Simulation.csv'
-        df.to_csv(filename, index=False)
+            data = {
+                'subpotnumber': subpot_numbers,
+                'longestleaf': longest_leaves,
+                'plantheight': plant_heights,
+                'leafcount': leaf_counts,
+                'status': statuses
+            }
 
-        return df
+            df = pd.DataFrame(data)
+            filename = f'Dataset/Pock choy /Generation{generation}_pot{pot_number}_Simulation.csv'
+            df.to_csv(filename, index=False)
 
-    # Main Streamlit app
+            return df
 
-
-
-    st.markdown(printWithTitleAndBoarder1('Simulation' , """Experiment with various nutrient levels and observe their impact on the week4 outcomes.""") , unsafe_allow_html=True)
-
-    optionpot = st.selectbox('Select the pot:', (1, 2))
-    # Your dataframe
-
-    if optionpot == 1:
-        # Replace 'Dataset/Pock choy /Generation3_pot1.csv' with the actual path to your CSV file
-        file_path = 'Dataset/Pock choy /Generation3_pot1.csv'
-
-    if optionpot == 2:
-        file_path = 'Dataset/Pock choy /Generation3_pot2.csv'
-    # Read the CSV file into a pandas DataFrame
-    df = pd.read_csv(file_path)
-
-    # Define a mapping for status to color
-    status_color_mapping = {'good': 'green', 'normal': 'orange', 'bad': 'red'}
-
-    # Create a dictionary with pot number as keys and color as values
-    pot_color_dict = {}
-
-    def update_status(leaf_count, benchmark=10):
-        if 8 <= leaf_count <= 10:
-            return 'Good'
-        elif 7 <= leaf_count <= 8:
-            return 'Normal'
-        else:
-            return 'Bad'
-
-    df['status'] = df['leafcount'].apply(update_status)
-    for index, row in df.iterrows():
-        pot_number = row['subpotnumber']
-        status = row['status'].lower()  # Convert to lowercase for case-insensitivity
-        color = status_color_mapping.get(status,
-                                         'unknown')  # Default to 'unknown' if status is not one of the specified values
-        pot_color_dict[pot_number] = color
-    dataframe = pot_color_dict
-    col1, col2 = st.columns(2)
-
-    # Sliders in the first column
-    temperature = col1.slider("Temperature (°C)", min_value=0, max_value=100, value=25, step=1)
-    salinity = col1.slider("Salinity", min_value=0, max_value=50, value=25, step=1)
-    tds = col1.slider("TDS (ppm)", min_value=0, max_value=1000, value=500, step=10)
-
-    # Sliders in the second column
-    orp = col2.slider("ORP (mV)", min_value=0, max_value=1000, value=500, step=10)
-    sr = col2.slider("Sr", min_value=0, max_value=100, value=50, step=1)
-    ec = col2.slider("EC (µS/cm)", min_value=0, max_value=100, value=50, step=1)
-    ph = col2.slider("pH", min_value=0, max_value=14, value=7, step=1)
+        # Main Streamlit app
 
 
-    col1 , col2 , col3 , col4, col5  = st.columns(5)
-    import time
-    if col3.button('_______Apply_______'):
-        # Generate and save logical data for Generation 3, Pot 1
-        generation_3_pot_1 = generate_logical_random_data(num_subplots=40, generation=3, pot_number=1)
-        #st.write('Generated and Saved CSV for Generation 3, Pot 1:', generation_3_pot_1)
 
-        # Generate and save logical data for Generation 3, Pot 2
-        generation_3_pot_2 = generate_logical_random_data(num_subplots=40, generation=3, pot_number=2)
-        #st.write('Generated and Saved CSV for Generation 3, Pot 2:', generation_3_pot_2)
+        st.markdown(printWithTitleAndBoarder1('Simulation' , """Experiment with various nutrient levels and observe their impact on the week4 outcomes.""") , unsafe_allow_html=True)
 
-    if optionpot == 1:
-        # Replace 'Dataset/Pock choy /Generation3_pot1.csv' with the actual path to your CSV file
-        file_path = 'Dataset/Pock choy /Generation3_pot1_Simulation.csv'
+        optionpot = st.selectbox('Select the pot:', (1, 2))
+        # Your dataframe
 
-    if optionpot == 2:
-        file_path = 'Dataset/Pock choy /Generation3_pot2_Simulation.csv'
-    # Read the CSV file into a pandas DataFrame
-    df = pd.read_csv(file_path)
+        if optionpot == 1:
+            # Replace 'Dataset/Pock choy /Generation3_pot1.csv' with the actual path to your CSV file
+            file_path = 'Dataset/Pock choy /Generation3_pot1.csv'
 
-    # Define a mapping for status to color
-    status_color_mapping = {'good': 'green', 'normal': 'orange', 'bad': 'red'}
+        if optionpot == 2:
+            file_path = 'Dataset/Pock choy /Generation3_pot2.csv'
+        # Read the CSV file into a pandas DataFrame
+        df = pd.read_csv(file_path)
 
-    # Create a dictionary with pot number as keys and color as values
-    pot_color_dict = {}
+        # Define a mapping for status to color
+        status_color_mapping = {'good': 'green', 'normal': 'orange', 'bad': 'red'}
 
-    def update_status(leaf_count, benchmark=10):
-        if 8 <= leaf_count <= 10:
-            return 'Good'
-        elif 7 <= leaf_count <= 8:
-            return 'Normal'
-        else:
-            return 'Bad'
+        # Create a dictionary with pot number as keys and color as values
+        pot_color_dict = {}
 
-    df['status'] = df['leafcount'].apply(update_status)
-    for index, row in df.iterrows():
-        pot_number = row['subpotnumber']
-        status = row['status'].lower()  # Convert to lowercase for case-insensitivity
-        color = status_color_mapping.get(status,
-                                         'unknown')  # Default to 'unknown' if status is not one of the specified values
-        pot_color_dict[pot_number] = color
-    dataframe = pot_color_dict
+        def update_status(leaf_count, benchmark=10):
+            if 8 <= leaf_count <= 10:
+                return 'Good'
+            elif 7 <= leaf_count <= 8:
+                return 'Normal'
+            else:
+                return 'Bad'
+
+        df['status'] = df['leafcount'].apply(update_status)
+        for index, row in df.iterrows():
+            pot_number = row['subpotnumber']
+            status = row['status'].lower()  # Convert to lowercase for case-insensitivity
+            color = status_color_mapping.get(status,
+                                             'unknown')  # Default to 'unknown' if status is not one of the specified values
+            pot_color_dict[pot_number] = color
+        dataframe = pot_color_dict
+        col1, col2 = st.columns(2)
+
+        # Sliders in the first column
+        temperature = col1.slider("Temperature (°C)", min_value=0, max_value=100, value=25, step=1)
+        salinity = col1.slider("Salinity", min_value=0, max_value=50, value=25, step=1)
+        tds = col1.slider("TDS (ppm)", min_value=0, max_value=1000, value=500, step=10)
+
+        # Sliders in the second column
+        orp = col2.slider("ORP (mV)", min_value=0, max_value=1000, value=500, step=10)
+        sr = col2.slider("Sr", min_value=0, max_value=100, value=50, step=1)
+        ec = col2.slider("EC (µS/cm)", min_value=0, max_value=100, value=50, step=1)
+        ph = col2.slider("pH", min_value=0, max_value=14, value=7, step=1)
 
 
-    col1, col2 = st.columns(2)
-    with col1:
-        css_styles = """
-                    <style>
-                        .button-container {
-                            display: grid;
-                            grid-template-columns: repeat(8, 1fr);
-                            gap: 10px;
-                            border: 2px solid #ddd; /* Border around the button container */
-                            padding: 10px; /* Add some padding for better appearance */
-                        }
-                        .button {
-                            width: 100%;
-                            height: 70px;
-                            background-color: #eee;
-                            color: #333;
-                            font-size: 10px;
-                            font-weight: bold;
-                            border: 2px solid #ddd;
-                            border-radius: 55px;
-                            cursor: pointer;
-                        }
-                    </style>
-                """
-        # Display CSS styles
-        st.markdown(css_styles, unsafe_allow_html=True)
+        col1 , col2 , col3 , col4, col5  = st.columns(5)
+        import time
+        if col3.button('_______Apply_______'):
+            # Generate and save logical data for Generation 3, Pot 1
+            generation_3_pot_1 = generate_logical_random_data(num_subplots=40, generation=3, pot_number=1)
+            #st.write('Generated and Saved CSV for Generation 3, Pot 1:', generation_3_pot_1)
 
-        df = pd.read_csv('Dataset/Pock choy /Generation3_pot1_Simulation.csv')
-        # Create button grid
-        button_container = f"""<div style="border: 2px solid #333333; padding:10px; border-radius:5px;">     <p style='text-align: center'>Pot  {optionpot}</p>  <div class='button-container'>"""
-        for key, value in dataframe.items():
-            # Use Streamlit's button widget with a callback to display text on click
-            button_container += f"""<button class='button' style='background-color: {value}; border-color: {value}; color: white'
-                                       onclick='st.write("{key} clicked!")'>{key}</button>"""
-        button_container += "</div> </div>"
+            # Generate and save logical data for Generation 3, Pot 2
+            generation_3_pot_2 = generate_logical_random_data(num_subplots=40, generation=3, pot_number=2)
+            #st.write('Generated and Saved CSV for Generation 3, Pot 2:', generation_3_pot_2)
 
-        # Display button grid
-        st.markdown(button_container, unsafe_allow_html=True)
+        if optionpot == 1:
+            # Replace 'Dataset/Pock choy /Generation3_pot1.csv' with the actual path to your CSV file
+            file_path = 'Dataset/Pock choy /Generation3_pot1_Simulation.csv'
 
-    with col2:
-        df = pd.read_csv('Dataset/Pock choy /Generation3_pot1_Simulation.csv')
-        selectpot = st.selectbox('Select the SubPot Number', range(1, 41))
-        subpot = f"SubPot{selectpot}"
-        filtered_df = df[df['subpotnumber'] == subpot]
-        html_content = f"""
-                    <div style="border: 2px solid #333333; padding:10px; border-radius:5px;">
-                        <h2 style="color: {dataframe[subpot]}; ">Health Crop Status: {filtered_df['status'].values[0]}</h2>
-                        <h2>Current Crop Traits</h2>
-                        <table>
-                            <tr>
-                                <th>Leaf Count</th>
-                                <th>Longest Leaf (mm)</th>
-                                <th>Plant Height (mm)</th>
-                            </tr>
-                            <tr>
-                                <td>{filtered_df['leafcount'].values[0]}</td>
-                                <td>{filtered_df['longestleaf'].values[0]}</td>
-                                <td>{filtered_df['plantheight'].values[0]}</td>
-                            </tr>
-                        </table>
-                        <h2>Crop Traits at week4</h2>
-                        <table border='1'>
-                            <tr>
-                                <th>Leaf Count</th>
-                                <th>Longest Leaf (mm)</th>
-                                <th>Plant Height (mm)</th>
-                            </tr>
-                            <tr>
-                                <td>{filtered_df['leafcount'].values[0] + 3}</td>
-                                <td>{filtered_df['longestleaf'].values[0] + 22}</td>
-                                <td>{filtered_df['plantheight'].values[0] + 44}</td>
-                            </tr>
-                        </table>
-                    </div>
+        if optionpot == 2:
+            file_path = 'Dataset/Pock choy /Generation3_pot2_Simulation.csv'
+        # Read the CSV file into a pandas DataFrame
+        df = pd.read_csv(file_path)
+
+        # Define a mapping for status to color
+        status_color_mapping = {'good': 'green', 'normal': 'orange', 'bad': 'red'}
+
+        # Create a dictionary with pot number as keys and color as values
+        pot_color_dict = {}
+
+        def update_status(leaf_count, benchmark=10):
+            if 8 <= leaf_count <= 10:
+                return 'Good'
+            elif 7 <= leaf_count <= 8:
+                return 'Normal'
+            else:
+                return 'Bad'
+
+        df['status'] = df['leafcount'].apply(update_status)
+        for index, row in df.iterrows():
+            pot_number = row['subpotnumber']
+            status = row['status'].lower()  # Convert to lowercase for case-insensitivity
+            color = status_color_mapping.get(status,
+                                             'unknown')  # Default to 'unknown' if status is not one of the specified values
+            pot_color_dict[pot_number] = color
+        dataframe = pot_color_dict
+
+
+        col1, col2 = st.columns(2)
+        with col1:
+            css_styles = """
+                        <style>
+                            .button-container {
+                                display: grid;
+                                grid-template-columns: repeat(8, 1fr);
+                                gap: 10px;
+                                border: 2px solid #ddd; /* Border around the button container */
+                                padding: 10px; /* Add some padding for better appearance */
+                            }
+                            .button {
+                                width: 100%;
+                                height: 70px;
+                                background-color: #eee;
+                                color: #333;
+                                font-size: 10px;
+                                font-weight: bold;
+                                border: 2px solid #ddd;
+                                border-radius: 55px;
+                                cursor: pointer;
+                            }
+                        </style>
                     """
-        st.markdown(html_content, unsafe_allow_html=True)
+            # Display CSS styles
+            st.markdown(css_styles, unsafe_allow_html=True)
+
+            df = pd.read_csv('Dataset/Pock choy /Generation3_pot1_Simulation.csv')
+            # Create button grid
+            button_container = f"""<div style="border: 2px solid #333333; padding:10px; border-radius:5px;">     <p style='text-align: center'>Pot  {optionpot}</p>  <div class='button-container'>"""
+            for key, value in dataframe.items():
+                # Use Streamlit's button widget with a callback to display text on click
+                button_container += f"""<button class='button' style='background-color: {value}; border-color: {value}; color: white'
+                                           onclick='st.write("{key} clicked!")'>{key}</button>"""
+            button_container += "</div> </div>"
+
+            # Display button grid
+            st.markdown(button_container, unsafe_allow_html=True)
+
+        with col2:
+            df = pd.read_csv('Dataset/Pock choy /Generation3_pot1_Simulation.csv')
+            selectpot = st.selectbox('Select the SubPot Number', range(1, 41))
+            subpot = f"SubPot{selectpot}"
+            filtered_df = df[df['subpotnumber'] == subpot]
+            html_content = f"""
+                        <div style="border: 2px solid #333333; padding:10px; border-radius:5px;">
+                            <h2 style="color: {dataframe[subpot]}; ">Health Crop Status: {filtered_df['status'].values[0]}</h2>
+                            <h2>Current Crop Traits</h2>
+                            <table>
+                                <tr>
+                                    <th>Leaf Count</th>
+                                    <th>Longest Leaf (mm)</th>
+                                    <th>Plant Height (mm)</th>
+                                </tr>
+                                <tr>
+                                    <td>{filtered_df['leafcount'].values[0]}</td>
+                                    <td>{filtered_df['longestleaf'].values[0]}</td>
+                                    <td>{filtered_df['plantheight'].values[0]}</td>
+                                </tr>
+                            </table>
+                            <h2>Crop Traits at week4</h2>
+                            <table border='1'>
+                                <tr>
+                                    <th>Leaf Count</th>
+                                    <th>Longest Leaf (mm)</th>
+                                    <th>Plant Height (mm)</th>
+                                </tr>
+                                <tr>
+                                    <td>{filtered_df['leafcount'].values[0] + 3}</td>
+                                    <td>{filtered_df['longestleaf'].values[0] + 22}</td>
+                                    <td>{filtered_df['plantheight'].values[0] + 44}</td>
+                                </tr>
+                            </table>
+                        </div>
+                        """
+            st.markdown(html_content, unsafe_allow_html=True)
 
