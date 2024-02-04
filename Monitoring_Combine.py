@@ -475,7 +475,7 @@ def MonitConstructor():
                             <div style="border: 2px solid #333333; padding:10px; border-radius:5px;">
                                 <div style="border: 2px solid #333333; padding:10px; border-radius:5px;">
                                 <h3 style="color:#333333;">Yield Report</h3>
-                                <p style="color:green;">Predicted Average Weight Grain for {generation} at week 4: 1011 gram after Aplly the Intervention plan (% 4 lower than the best, Best weight grain is 1100 gram.)</p>
+                                <p style="color:green;">Predicted Average Weight Grain for {generation} at week 4: 1011 gram after applay the Intervention plan (% 4 lower than the best, Best weight grain is 1100 gram.)</p>
                                 <table style="border-collapse: collapse; width: 100%;">
                                 </div>
                                 <h3>Crop Traits</h3>

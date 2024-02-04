@@ -401,7 +401,9 @@ def insightConstructor():
 
         # Streamlit app
         st.markdown(html_code_packchoy, unsafe_allow_html=True)
-
+        st.markdown(printCostumTitleAndContenth2("Best Season and Plot",
+                                                 ""),
+                    unsafe_allow_html=True)
         col1, col2 = st.columns(2)
 
         with col1:
@@ -476,6 +478,37 @@ def insightConstructor():
         df = pd.read_csv(f'Dataset/Rice/Season{optionseasson}.csv')
         df = df.query(f"""Plot == 'P{optionplot}'""")
 
+        # Read data from CSV file
+        df = pd.read_csv('Dataset/Pock choy /PackchoyGeneration2.csv')
+
+        # Convert 'Date' column to datetime format
+        # Streamlit app
+        st.title('Pak Choy Traits Over Time')
+
+        # Selecting Pot and SubPot
+        selected_pot = st.selectbox('Select a Pot', df['Pot'].unique())
+        selected_subpot = st.selectbox('Select a SubPot', df['SubPot'].unique())
+
+        # Filter DataFrame based on selected Pot and SubPot
+        filtered_df = df[(df['Pot'] == selected_pot) & (df['SubPot'] == selected_subpot)]
+
+        # Selecting traits
+
+
+        fig_leaves_count = px.line(filtered_df, x='Date', y='Leaves Count', markers=True,
+                                   title='Trend of Leaves Count Over Time')
+        fig_leaves_count.update_layout(xaxis_title='Date', yaxis_title='Leaves Count')
+        st.plotly_chart(fig_leaves_count)
+
+        fig_plant_height = px.line(filtered_df, x='Date', y='Plant Height(mm)', markers=True,
+                                   title='Trend of Plant Height Over Time')
+        fig_plant_height.update_layout(xaxis_title='Date', yaxis_title='Plant Height(mm)')
+        st.plotly_chart(fig_plant_height)
+
+        fig_longest_leaf = px.line(filtered_df, x='Date', y='Longest Leaf', markers=True,
+                                   title='Trend of Longest Leaf Over Time')
+        fig_longest_leaf.update_layout(xaxis_title='Date', yaxis_title='Longest Leaf')
+        st.plotly_chart(fig_longest_leaf)
 
     if option2 == "Aqua":
         # Load the CSV data

@@ -425,6 +425,32 @@ def exploreConstructor():
                                                     </div>
                                                 """
         st.markdown(html_content, unsafe_allow_html=True)
+
+
+        # Read data from CSV file
+        df = pd.read_csv('Dataset/Pock choy /PackchoyGeneration2.csv')
+
+        # Convert 'Date' column to datetime format
+        # Streamlit app
+        st.title('Pak Choy Senesor values Over Time')
+
+        # Selecting Pot and SubPot
+        selected_pot = st.selectbox('Select a Pot', df['Pot'].unique())
+        selected_subpot = st.selectbox('Select a SubPot', df['SubPot'].unique())
+
+        # Filter DataFrame based on selected Pot and SubPot
+        filtered_df = df[(df['Pot'] == selected_pot) & (df['SubPot'] == selected_subpot)]
+
+        # Selecting trait
+        # Plotting with Plotly Express
+        fig_ec = px.line(filtered_df, x='Date', y='EC', markers=True, title='Trend of EC Over Time')
+        fig_ec.update_layout(xaxis_title='Date', yaxis_title='EC')
+        st.plotly_chart(fig_ec)
+
+        fig_ph = px.line(filtered_df, x='Date', y='pH', markers=True, title='Trend of pH Over Time')
+        fig_ph.update_layout(xaxis_title='Date', yaxis_title='pH')
+        st.plotly_chart(fig_ph)
+
         col_1, col_2, col_3 = st.columns(3)
         df = pd.DataFrame()
         with col_1:
@@ -445,6 +471,8 @@ def exploreConstructor():
         mask = (df['time'] > startDate) & (df['time'] <= endDate)
         p = px.line(df.loc[mask], x='time', y='value', title=optionsnutrient)
         st.plotly_chart(p)
+
+
 
     if option2 == 'Aqua':
         selectdate = st.selectbox(
