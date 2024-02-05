@@ -26,7 +26,7 @@ def printWithTitleAndBoarder(title, context):
                         <th>Risk Level</th>
                     </tr>
                     <tr>
-                        <td style="color : red;">good</td>
+                        <td style="color : red;">bad</td>
                         <td style="color : red;">4</td>
                         <td style="color : red;">High Risk</td>
                     </tr>
