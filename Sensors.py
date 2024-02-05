@@ -372,7 +372,7 @@ def exploreConstructor():
             st.plotly_chart(fig)
 
 
-        
+
 
         html_content = f"""
                                     <div style="border: 2px solid #333333; padding:10px; border-radius:5px;">
