@@ -677,9 +677,14 @@ def exploreConstructor():
         mask = (df['time'] > startDate) & (df['time'] <= endDate)
         p = px.line(df.loc[mask], x='time', y='value', title=optionsnutrient)
         st.plotly_chart(p)
+        st.write('asdasd')
 
+        l = ['waterTemperature', 'waterPh', 'waterSr', 'waterOrp', 'waterTds', 'waterSalinity']
+        for p in l:
+            df = getPakChoyData(p)
+            mask = (df['time'] > '2023-10-10 22:46:13') & (df['time'] <= '2023-11-11 23:58:26')
+            st.write(df.loc[mask])
 
-        
 
 
     if option2 == 'Aqua':

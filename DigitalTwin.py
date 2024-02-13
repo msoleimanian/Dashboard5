@@ -289,6 +289,15 @@ def digitaltwinconstructor():
             """
             st.markdown(html_content , unsafe_allow_html=True)
 
+
+
+
+
+
+
+
+
+
         def color_row(val):
             color = 'green' if val == df['plantheight'].max() else 'orange' if val > df['plantheight'].mean() else 'red'
             return f'background-color: {color}'

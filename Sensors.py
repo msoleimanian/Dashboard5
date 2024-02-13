@@ -405,6 +405,24 @@ def exploreConstructor():
         st.plotly_chart(p)
 
 
+        st.write('Data')
+        l = ['waterTemperature', 'waterPh', 'waterSr', 'waterOrp', 'waterTds', 'waterSalinity', 'waterEc']
+        for p in l:
+            df = getPakChoyData(p)
+            st.write(p)
+            mask = (df['time'] > '2023-10-10 22:46:13') & (df['time'] <= '2023-11-11 23:58:26')
+            st.write(df.loc[mask])
+            print('################################################')
+            df1 = df
+            df1['time'] = pd.to_datetime(df['time'])
+            df1['value'] = pd.to_numeric(df['value'])
+
+            # Group by date and calculate the mean
+            result_df = df1.groupby(df1['time'].dt.date)['value'].mean().reset_index()
+
+            st.write(result_df)
+            print('################################################')
+
 
     if option2 == 'Aqua':
         selectdate = st.selectbox(
