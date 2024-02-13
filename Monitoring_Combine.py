@@ -355,51 +355,6 @@ def MonitConstructor():
             st.markdown(html_content, unsafe_allow_html=True)
     #--------------------------------------------- 3D
 
-        import pandas as pd
-        import plotly.express as px
-        import plotly.graph_objects as go
-
-        # Read data from CSV file
-        file_path = 'Dataset/Pock choy/greenhouse_data.csv'
-        df = pd.read_csv(file_path)
-
-        # Streamlit app
-        st.title('3D Scatter Plot of Plant Traits')
-
-        # Create 3D scatter plot with Plotly Express
-        scatter_fig = px.scatter_3d(df, x='Row', y='Column', z='PlantHeight', color='LeafCount',
-                                    labels={'PlantHeight': 'Plant Height', 'LeafCount': 'Leaf Count'})
-
-        # Create a line representing the plant (green color)
-        line_fig = go.Figure()
-        line_fig.add_trace(go.Scatter3d(x=df['Row'], y=df['Column'], z=df['PlantHeight'],
-                                        mode='lines',
-                                        line=dict(color='green', width=5),
-                                        name='Plant Line'))
-
-        # Create a scatter plot with markers as cones
-        cone_fig = go.Figure()
-        cone_fig.add_trace(go.Scatter3d(x=df['Row'], y=df['Column'], z=df['PlantHeight'],
-                                        mode='markers',
-                                        marker=dict(symbol='cone',
-                                                    sizemode='diameter',
-                                                    sizeref=0.5 * max(df['LeafCount']),
-                                                    size=df['LeafCount'],
-                                                    color=df['LeafCount'],
-                                                    colorscale='Viridis',
-                                                    opacity=0.5,
-                                                    colorbar=dict(title='Leaf Count')),
-                                        name='Leaf Cone'))
-
-        # Set axis titles for all figures
-        scatter_fig.update_layout(scene=dict(xaxis_title='Row', yaxis_title='Column', zaxis_title='Plant Height'))
-        line_fig.update_layout(scene=dict(xaxis_title='Row', yaxis_title='Column', zaxis_title='Plant Height'))
-        cone_fig.update_layout(scene=dict(xaxis_title='Row', yaxis_title='Column', zaxis_title='Plant Height'))
-
-        # Show the plots using Streamlit
-        st.plotly_chart(scatter_fig)
-        st.plotly_chart(line_fig)
-        st.plotly_chart(cone_fig)
 
         #--------------------------------------------- Real time monitoring
         st.markdown(textwithboarder('Real-time Traits',
