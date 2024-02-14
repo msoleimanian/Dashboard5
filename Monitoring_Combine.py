@@ -353,10 +353,98 @@ def MonitConstructor():
             </div>
             """
             st.markdown(html_content, unsafe_allow_html=True)
-    #--------------------------------------------- 3D
-
 
         #--------------------------------------------- Real time monitoring
+
+        if optionpot == 1:
+            # Replace 'Dataset/Pock choy /Generation3_pot1.csv' with the actual path to your CSV file
+            file_path = 'Dataset/Pock choy /Generation3_pot1.csv'
+
+        if optionpot == 2:
+            file_path = 'Dataset/Pock choy /Generation3_pot2.csv'
+            # Read the CSV file into a pandas DataFrame
+        dfmain = pd.read_csv(file_path)
+
+        import plotly.graph_objects as go
+        import pandas as pd
+
+        # Load your dataset
+        def load_data():
+            return pd.read_csv("Dataset/Pock choy /greenhouse_data.csv")
+
+        df = load_data()
+        df['Status']  = dfmain['status']
+        df['PlantHeight']  = dfmain['plantheight']
+        # Function to create 3D plot
+        def create_3d_plot(df, key):
+            fig = go.Figure()
+
+            # Add plant cones in 3D scatter plot
+            for i, row in df.iterrows():
+                # Adjust the color based on harvested status or any other criteria you have
+                if row['Status'] == 'Bad':
+                    color = 'red'
+
+                elif row['Status'] == 'Good':
+                    color = 'green'
+
+
+                else :
+                    color = 'lightblue'
+                # Add cones for the plants with transparency
+                fig.add_trace(go.Cone(
+                    x=[row['Row']*10],
+                    y=[row['Column']*10],
+                    z=[row['PlantHeight']],  # Start of the cone at z=0
+                    u=[0],  # Direction of the cone in x-axis
+                    v=[0],  # Direction of the cone in y-axis
+                    w=[row['PlantHeight']],  # Height of the cone
+                    sizemode="absolute",
+                    sizeref=row['LeafCount']+10,  # Scale factor for the cones' size
+                    colorscale=[[0, color], [1, color]],  # Color of the cone
+                    showscale=False,  # Do not show color scale
+                    opacity=0.5,  # Adjust the opacity (transparency)
+                    anchor="tip"  # Anchor the cone at the top
+                ))
+                fig.add_trace(go.Scatter3d(
+                    x=[row['Row']*10, row['Row']*10],
+                    y=[row['Column']*10, row['Column']*10],
+                    z=[0, row['PlantHeight']],
+                    mode='lines',
+                    marker=dict(
+                        color=color,
+                        size=18,  # Adjust the size of the markers
+                        opacity=1,  # Adjust the opacity (transparency)
+                        line=dict(
+                            color='#ffffff',  # Set the border color to black
+                            width=1  # Adjust the border width
+                        )
+                    ),
+                    showlegend=False
+                ))
+
+            # Update layout for larger plot with rectangular aspect ratio
+            fig.update_layout(
+                scene=dict(
+                    xaxis_title='Row',
+                    yaxis_title='Column',
+                    zaxis_title='Plant Height',
+                    aspectmode='manual',  # Set aspect ratio manually
+                    aspectratio=dict(x=1, y=1, z=1),  # Adjust the aspect ratio as needed
+                ),
+                width=1100,  # Adjust the width of the plot
+                height=1100,  # Adjust the height of the plot
+            )
+
+            st.plotly_chart(fig, key=key)
+
+        # Display the 3D plot
+
+        st.markdown(printWithTitleAndBoarder1('3D Model' , 'Here You can see the 3D model of the greenhouse'),unsafe_allow_html= True)
+
+        create_3d_plot(df, key='unique_chart3')
+
+        #__------------------------------------------------------------
         st.markdown(textwithboarder('Real-time Traits',
                                     f"""View the latest data from Aqua Fish traits and explore the forecast for the upcoming traits. (latest data)"""))
         col1, col2, col3, col4, col5, col6 = st.columns(6)
