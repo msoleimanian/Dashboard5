@@ -375,7 +375,6 @@ def insightConstructor():
 
         # Group by pot and subpot, calculate averages
         grouped_df = filtered_df.groupby(['generation', 'pot']).mean().reset_index()
-        st.write(grouped_df)
         # Scale the values based on the height (score)
         max_score = e
         height_scaling = 10
