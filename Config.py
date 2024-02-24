@@ -1,9 +1,13 @@
 import streamlit as st
-import time
-import numpy as np
+import streamlit as st
+import streamlit.components.v1 as components
+from streamlit_option_menu import option_menu
 import pandas as pd
 import time
-import plotly.express as px
+
+import time
+import plotly.graph_objects as go
+from plotly.subplots import make_subplots
 
 
 
@@ -105,6 +109,13 @@ def animated_linear_progress_bar_with_metric(metric_value, label, value, color='
     """
     st.markdown(progress_html, unsafe_allow_html=True)
 
+def printWithTitleAndBoarder1(title, context):
+    return f"""
+        <div style="border: 2px solid #333333; padding:10px; border-radius:5px;">
+            <h3 style="color:#333333;">{title}</h3>
+            <h5>{context}</h5>
+        </div>
+        """
 # HTML and CSS for animated line
 animated_line_html = """
 <style>
@@ -138,46 +149,62 @@ animated_line_html = """
 </div>
 """
 
+def ConstructorConfig():
+    option2 = option_menu(None, ["Pak choy", "Rice", "Aqua"],
+                          menu_icon="forward", default_index=0, orientation="horizontal",
+                          styles={
+                              "container": {"padding": "0!important", "background-color": "#fafafa"},
+                              "icon": {"color": "orange", "font-size": "15px"},
+                              "nav-link": {"font-size": "15px", "text-align": "right", "margin": "0px",
+                                           "--hover-color": "#eee", },
+                              "nav-link-selected": {"background-color": "green"},
+                          }
+                          )
 
 
-# Display the animated line using HTML
-st.set_page_config(page_title="Config", page_icon="📈")
+    if option2 == "Pak choy":
+        st.markdown(printWithTitleAndBoarder1('Traits Configuration', """Please define your ideal and goal for each crop traits during harvesting time. This data aids the system in scoring and providing insights into your crop's status.""") , unsafe_allow_html=True)
+        st.write('')
+        data_df = pd.DataFrame(
+            {
+                "Crop Traits": ["Plant Height", "Longest Leaf", "Leaf Count"],
+                "Parameter": [False, True, False],
+                "Estimation": ["260", "150", "11"],  # New column for text input
+            }
+        )
 
-option2 = st.sidebar.selectbox(
-   "Select the Farm",
-   ("Pak choy", "Rice"),
-   index=1,
-   placeholder="Select the farm...",
-)
-st.markdown(printCostumTitleAndContenth2("Config",
-                                         "Select how you want the system to benchmark the performance of the plots and seasons"),
-            unsafe_allow_html=True)
-
-if option2 == "Rice":
-    bench = st.radio(
-        "Benchmark",
-        ["Benchmark based on the best harvest (Season2 Plot5)", "Benchmark based on this season and plot"],
-        index=0,
-    )
-    if bench == "Benchmark based on this season and plot":
-        title = st.text_input('No.of Tiller')
-        title = st.text_input('No.of Panicle')
-        title = st.text_input('No.of Spikelet')
-        title = st.text_input('No.of Filled')
-        title = st.text_input('No. Of Unfilled Grain')
-        title = st.text_input('Weight Grain (1000 grains)')
+        data_edited = st.data_editor(
+            data_df,
+            column_config={
+                "favorite": st.column_config.CheckboxColumn(
+                    "Which ones are important?",
+                    help="which crop traits is important for the Scoring?",
+                    default=False,
+                ),
+                "text_input": st.column_config.TextColumn("Your Estimation of the Amount of the Crop traits when you want to harvest.", help="Put a number that show the amount of the IDEAL crop traits "),
+            },
+            disabled=["widgets"],
+            hide_index=True,
+        )
 
 
-if option2 == "Pak choy":
-    bench = st.radio(
-        "Benchmark",
-        ["Benchmark based on the best harvest (Plot1 Pot1)", "Benchmark based on this season and plot"],
-        index=0,
-    )
-    if bench == "Benchmark based on this season and plot":
-        title = st.text_input('Plant Height')
-        title = st.text_input('Leaves Count')
-        title = st.text_input('Longest Leaf')
+        st.markdown(printWithTitleAndBoarder1('Yeild Configuration', """Please define your ideal and goal for each farm yield during harvesting time. This data aids the system in showing the status of the future and daily recommendation.""") , unsafe_allow_html=True)
 
+        yeild_pakchoy = 1100
+        col1 , col2 = st.columns(2)
+        with col1:
+            genre = st.radio(
+                "",
+                ["Default : Weight of the Pak Choy farm when you want to harvest: 1100grams", "Put your Estimation of the yield of the Pak choy"],
+                index=0,
+            )
+        with col2:
+            if genre == "Put your Estimation of the yield of the Pak choy":
+                text_input = st.text_input('Put your Estimation.')
+                yeild_pakchoy = text_input
 
+        data_edited['Crop Traits'] = ['plantheight', 'longestleaf', 'leavescount']
 
+        if st.button('Submit'):
+            data_edited['yeild'] = yeild_pakchoy
+            data_edited.to_csv("Dataset/Benchmark/Pakchoyparameter.csv", index=False)

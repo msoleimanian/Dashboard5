@@ -156,7 +156,7 @@ def printWithTitleAndBoarderwithoutTable(title, context):
             <table>
                     <tr>
                         <th>Current Growth Time</th>
-                        <th>Total Germination Time</th>
+                        <th>Total Generation Time</th>
                     </tr>
                     <tr>
                         <td>2 week</td>

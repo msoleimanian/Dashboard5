@@ -222,6 +222,7 @@ def SimulationConstructor():
     import pandas as pd
     import numpy as np
 
+
     option2 = option_menu(None, ["Pak choy", "Rice", "Aqua"],
                           menu_icon="forward", default_index=0, orientation="horizontal",
                           styles={
@@ -234,203 +235,51 @@ def SimulationConstructor():
                           )
     if option2 == "Pak choy":
 
-        def generate_logical_random_data(num_subplots, generation, pot_number):
-
-            subpot_numbers = [f'SubPot{i + 1}' for i in range(num_subplots)]
-
-            # Set max values
-            max_plant_height = 167
-            max_leaf_count = 7
-            max_longest_leaf = 110
-
-            # Generate one random value for plant height
-            reference_plant_height = np.random.uniform(0.9 * max_plant_height, max_plant_height)
-
-            # Generate traits based on the reference plant height
-            plant_heights = np.round(
-                np.random.uniform(0.9 * reference_plant_height, reference_plant_height, size=num_subplots))
-            longest_leaves = np.round(np.random.uniform(0.9 * max_longest_leaf, max_longest_leaf, size=num_subplots))
-            leaf_counts = np.round(np.random.uniform(0.9 * max_leaf_count, max_leaf_count, size=num_subplots))
-
-            # Determine status based on percentage distribution
-            num_good = int(0.23 * num_subplots)
-            num_normal = int(0.13 * num_subplots)
-            num_bad = num_subplots - num_good - num_normal
-
-            statuses = np.array(['Good'] * num_good + ['Normal'] * num_normal + ['Bad'] * num_bad)
-            np.random.shuffle(statuses)
-
-            data = {
-                'subpotnumber': subpot_numbers,
-                'longestleaf': longest_leaves,
-                'plantheight': plant_heights,
-                'leafcount': leaf_counts,
-                'status': statuses
-            }
-
-            df = pd.DataFrame(data)
-            filename = f'Dataset/Pock choy /Generation{generation}_pot{pot_number}_Simulation.csv'
-            df.to_csv(filename, index=False)
-
-            return df
-
-        # Main Streamlit app
-
-
-
-        st.markdown(printWithTitleAndBoarder1('Simulation' , """Experiment with various nutrient levels and observe their impact on the week4 outcomes.""") , unsafe_allow_html=True)
-
-        optionpot = st.selectbox('Select the pot:', (1, 2))
-        # Your dataframe
-
-        if optionpot == 1:
-            # Replace 'Dataset/Pock choy /Generation3_pot1.csv' with the actual path to your CSV file
-            file_path = 'Dataset/Pock choy /Generation3_pot1.csv'
-
-        if optionpot == 2:
-            file_path = 'Dataset/Pock choy /Generation3_pot2.csv'
-        # Read the CSV file into a pandas DataFrame
-        df = pd.read_csv(file_path)
-
-        # Define a mapping for status to color
-        status_color_mapping = {'good': 'green', 'normal': 'orange', 'bad': 'red'}
-
-        # Create a dictionary with pot number as keys and color as values
-        pot_color_dict = {}
-
-        def update_status(leaf_count, benchmark=10):
-            if 8 <= leaf_count <= 10:
-                return 'Good'
-            elif 7 <= leaf_count <= 8:
-                return 'Normal'
-            else:
-                return 'Bad'
-
-        df['status'] = df['leafcount'].apply(update_status)
-        for index, row in df.iterrows():
-            pot_number = row['subpotnumber']
-            status = row['status'].lower()  # Convert to lowercase for case-insensitivity
-            color = status_color_mapping.get(status,
-                                             'unknown')  # Default to 'unknown' if status is not one of the specified values
-            pot_color_dict[pot_number] = color
-        dataframe = pot_color_dict
-        import random
-
-        # Initialize session state
-        if 'slider_values' not in st.session_state:
-            st.session_state.slider_values = {
-                'temperature': 25,
-                'salinity': 25,
-                'tds': 500,
-                'orp': 500,
-                'sr': 50,
-                'ec': 50,
-                'ph': 7
-            }
-
-        if 'random_numbers' not in st.session_state:
-            st.session_state.random_numbers = {
-                'random_ph_week3': round(random.uniform(6.5, 8.5), 2),
-                'random_ammonia_week3': round(random.uniform(-5, 5), 2),
-                'random_do_week3': round(random.uniform(-1, 1), 2),
-                'random_salinity_week3': round(random.uniform(30, 40), 2),
-                'random_ph_week4': round(random.uniform(15, 20), 2),
-                'random_ammonia_week4': round(random.uniform(-5, 5), 2),
-                'random_do_week4': round(random.uniform(5, 15), 2),
-                'random_salinity_week4': round(random.uniform(20, 30), 2),
-            }
-
-        # Sliders in the first column
+        #***********************
+        st.markdown(printWithTitleAndBoarder1('Simulation' , """Select the information regarding these parameters, and the system will generate future leaf counts. Define these parameters: 'Pot', 'Water Temperature', 'Water pH', 'Water Sr', 'Water ORP', 'Water TDS', 'Water EC', 'Day'. The system will then provide the corresponding leaf count predictions.""") , unsafe_allow_html=True)
+        st.write('')
         col1, col2 = st.columns(2)
-        temperature = col1.slider("Temperature (°C)", min_value=0, max_value=100,
-                                  value=st.session_state.slider_values['temperature'], step=1)
-        salinity = col1.slider("Salinity", min_value=0, max_value=50, value=st.session_state.slider_values['salinity'],
-                               step=1)
-        tds = col1.slider("TDS (ppm)", min_value=0, max_value=1000, value=st.session_state.slider_values['tds'],
-                          step=10)
-
+        temperature = col1.slider("Temperature (°C)", min_value=0.0, max_value=40.0,step=0.1)
+        tds = col1.slider("TDS (ppm)", min_value=0.0, max_value=25.0, step=0.1)
         # Sliders in the second column
-        orp = col2.slider("ORP (mV)", min_value=0, max_value=1000, value=st.session_state.slider_values['orp'], step=10)
-        sr = col2.slider("Sr", min_value=0, max_value=100, value=st.session_state.slider_values['sr'], step=1)
-        ec = col2.slider("EC (µS/cm)", min_value=0, max_value=100, value=st.session_state.slider_values['ec'], step=1)
-        ph = col2.slider("pH", min_value=0, max_value=14, value=st.session_state.slider_values['ph'], step=1)
+        orp = col2.slider("ORP (mV)", min_value=40.0, max_value=100.0, step=0.1)
+        sr = col2.slider("Sr", min_value=0.0, max_value=2.0,  step=0.1)
+        ec = col2.slider("EC (µS/cm)", min_value=0.0, max_value=20.0, step=0.1)
+        ph = col1.slider("pH", min_value=0.0, max_value=14.0,  step=0.1)
 
-        # Check if slider values have changed
-        if (
-                temperature != st.session_state.slider_values['temperature'] or
-                salinity != st.session_state.slider_values['salinity'] or
-                tds != st.session_state.slider_values['tds'] or
-                orp != st.session_state.slider_values['orp'] or
-                sr != st.session_state.slider_values['sr'] or
-                ec != st.session_state.slider_values['ec'] or
-                ph != st.session_state.slider_values['ph']
-        ):
-            # Generate new random numbers
-            st.session_state.random_numbers = {
-                'random_ph_week3': round(random.uniform(6.5, 8.5), 2),
-                'random_ammonia_week3': round(random.uniform(-5, 5), 2),
-                'random_do_week3': round(random.uniform(-1, 1), 2),
-                'random_salinity_week3': round(random.uniform(30, 40), 2),
-                'random_ph_week4': round(random.uniform(15, 20), 2),
-                'random_ammonia_week4': round(random.uniform(-5, 5), 2),
-                'random_do_week4': round(random.uniform(5, 15), 2),
-                'random_salinity_week4': round(random.uniform(20, 30), 2),
-            }
+        day = col1.slider("Day", min_value=10.0, max_value=31.0, step=1.0)
+        potnumber = col2.selectbox('Select the potnumber:', (1, 2))
+        import requests
+        import json
 
-            # Generate and save logical data for Generation 3, Pot 1
-            generation_3_pot_1 = generate_logical_random_data(num_subplots=40, generation=3, pot_number=1)
-            # st.write('Generated and Saved CSV for Generation 3, Pot 1:', generation_3_pot_1)
+        url = 'https://7efa-34-73-236-137.ngrok-free.app/LeavesCount_prediction'  # Replace with your Ngrok URL
+        potnumberlist = []
+        leafcountnumber = []
+        for i in range(40):
+            potnumberlist.append(i+1)
 
-            # Generate and save logical data for Generation 3, Pot 2
-            generation_3_pot_2 = generate_logical_random_data(num_subplots=40, generation=3, pot_number=2)
-            # st.write('Generated and Saved CSV for Generation 3, Pot 2:', generation_3_pot_2)
 
-        # Update session state with current slider values
-        st.session_state.slider_values = {
-            'temperature': temperature,
-            'salinity': salinity,
-            'tds': tds,
-            'orp': orp,
-            'sr': sr,
-            'ec': ec,
-            'ph': ph
+        df = pd.DataFrame()
+        input_data_for_model = {
+            'Pot' : potnumber,
+            'waterTemperature': temperature,
+            'waterPh': ph,
+            'waterSr': sr,
+            'waterOrp': orp,
+            'waterTds': tds,
+            'waterEc': ec,
+            'Day': day
         }
 
-        # Access the random numbers from the session state
-        random_ph_week3 = st.session_state.random_numbers['random_ph_week3']
-        random_ammonia_week3 = st.session_state.random_numbers['random_ammonia_week3']
-        random_do_week3 = st.session_state.random_numbers['random_do_week3']
-        random_salinity_week3 = st.session_state.random_numbers['random_salinity_week3']
-
-        random_ph_week4 = st.session_state.random_numbers['random_ph_week4']
-        random_ammonia_week4 = st.session_state.random_numbers['random_ammonia_week4']
-        random_do_week4 = st.session_state.random_numbers['random_do_week4']
-        random_salinity_week4 = st.session_state.random_numbers['random_salinity_week4']
-
-
-
-        col1 , col2 , col3 , col4, col5  = st.columns(5)
-        import time
-        import random
-        apply = col3.button('_______Apply_______')
-
-        if apply and False:
-            # Generate and save logical data for Generation 3, Pot 1
-            generation_3_pot_1 = generate_logical_random_data(num_subplots=40, generation=3, pot_number=1)
-            #st.write('Generated and Saved CSV for Generation 3, Pot 1:', generation_3_pot_1)
-
-            # Generate and save logical data for Generation 3, Pot 2
-            generation_3_pot_2 = generate_logical_random_data(num_subplots=40, generation=3, pot_number=2)
-            #st.write('Generated and Saved CSV for Generation 3, Pot 2:', generation_3_pot_2)
-
-        if optionpot == 1:
-            # Replace 'Dataset/Pock choy /Generation3_pot1.csv' with the actual path to your CSV file
-            file_path = 'Dataset/Pock choy /Generation3_pot1_Simulation.csv'
-
-        if optionpot == 2:
-            file_path = 'Dataset/Pock choy /Generation3_pot2_Simulation.csv'
-        # Read the CSV file into a pandas DataFrame
-        df = pd.read_csv(file_path)
+        response = requests.post(url, json=input_data_for_model)
+        if response.status_code == 200:
+            prediction = response.json()
+            print(json.loads(prediction['prediction']))
+            df['leafcount'] = json.loads(prediction['prediction'])
+            df['subpotnumber'] = potnumberlist
+        else:
+            print("Error:", response.text)
+        #***********************************
 
         # Define a mapping for status to color
         status_color_mapping = {'good': 'green', 'normal': 'orange', 'bad': 'red'}
@@ -439,9 +288,9 @@ def SimulationConstructor():
         pot_color_dict = {}
 
         def update_status(leaf_count, benchmark=10):
-            if 8 <= leaf_count <= 10:
+            if day/2 - 1 <= leaf_count <= day/2:
                 return 'Good'
-            elif 7 <= leaf_count <= 8:
+            elif day/2 - 5 <= leaf_count <= day/2 - 3:
                 return 'Normal'
             else:
                 return 'Bad'
@@ -455,125 +304,93 @@ def SimulationConstructor():
             pot_color_dict[pot_number] = color
         dataframe = pot_color_dict
 
-
-        col1, col2 = st.columns(2)
-        with col1:
-            css_styles = """
-                        <style>
-                            .button-container {
-                                display: grid;
-                                grid-template-columns: repeat(8, 1fr);
-                                gap: 10px;
-                                border: 2px solid #ddd; /* Border around the button container */
-                                padding: 10px; /* Add some padding for better appearance */
-                            }
-                            .button {
-                                width: 100%;
-                                height: 70px;
-                                background-color: #eee;
-                                color: #333;
-                                font-size: 10px;
-                                font-weight: bold;
-                                border: 2px solid #ddd;
-                                border-radius: 55px;
-                                cursor: pointer;
-                            }
-                        </style>
-                    """
-            # Display CSS styles
-            st.markdown(css_styles, unsafe_allow_html=True)
-
-            df = pd.read_csv('Dataset/Pock choy /Generation3_pot1_Simulation.csv')
-            # Create button grid
-            button_container = f"""<div style="border: 2px solid #333333; padding:10px; border-radius:5px;">     <p style='text-align: center'>Pot  {optionpot}</p>  <div class='button-container'>"""
-            for key, value in dataframe.items():
-                # Use Streamlit's button widget with a callback to display text on click
-                button_container += f"""<button class='button' style='background-color: {value}; border-color: {value}; color: white'
-                                           onclick='st.write("{key} clicked!")'>{key}</button>"""
-            button_container += "</div> </div>"
-
-            # Display button grid
-            st.markdown(button_container, unsafe_allow_html=True)
-
-        with col2:
-            df = pd.read_csv('Dataset/Pock choy /Generation3_pot1_Simulation.csv')
-            selectpot = st.selectbox('Select the SubPot Number', range(1, 41))
-            subpot = f"SubPot{selectpot}"
-            filtered_df = df[df['subpotnumber'] == subpot]
-            html_content = f"""
-                        <div style="border: 2px solid #333333; padding:10px; border-radius:5px;">
-                            <h2 style="color: {dataframe[subpot]}; ">Health Crop Status: {filtered_df['status'].values[0]}</h2>
-                            <h2>Current Crop Traits</h2>
-                            <table>
-                                <tr>
-                                    <th>Leaf Count</th>
-                                    <th>Longest Leaf (mm)</th>
-                                    <th>Plant Height (mm)</th>
-                                </tr>
-                                <tr>
-                                    <td>{filtered_df['leafcount'].values[0]}</td>
-                                    <td>{filtered_df['longestleaf'].values[0]}</td>
-                                    <td>{filtered_df['plantheight'].values[0]}</td>
-                                </tr>
-                            </table>
-                            <h2>Crop Traits at week4</h2>
-                            <table border='1'>
-                                <tr>
-                                    <th>Leaf Count</th>
-                                    <th>Longest Leaf (mm)</th>
-                                    <th>Plant Height (mm)</th>
-                                </tr>
-                                <tr>
-                                    <td>{filtered_df['leafcount'].values[0] + 3}</td>
-                                    <td>{filtered_df['longestleaf'].values[0] + 22}</td>
-                                    <td>{filtered_df['plantheight'].values[0] + 44}</td>
-                                </tr>
-                            </table>
-                        </div>
+        css_styles = """
+                            <style>
+                                .button-container {
+                                    display: grid;
+                                    grid-template-columns: repeat(8, 1fr);
+                                    gap: 10px;
+                                    border: 2px solid #ddd; /* Border around the button container */
+                                    padding: 10px; /* Add some padding for better appearance */
+                                }
+                                .button {
+                                    width: 100%;
+                                    height: 70px;
+                                    background-color: #eee;
+                                    color: #333;
+                                    font-size: 20px;
+                                    font-weight: bold;
+                                    border: 2px solid #ddd;
+                                    border-radius: 55px;
+                                    cursor: pointer;
+                                }
+                            </style>
                         """
-            st.markdown(html_content, unsafe_allow_html=True)
+        # Display CSS styles
+        st.markdown(css_styles, unsafe_allow_html=True)
 
-        st.write('')
+        # Create button grid
+        button_container = f"""<div style="border: 2px solid #333333; padding:10px; border-radius:5px;">     <p style='text-align: center'>Pot  1</p>  <div class='button-container'>"""
+        for key, value in dataframe.items():
+            # Use Streamlit's button widget with a callback to display text on click
+            button_container += f"""<button class='button' style='background-color: {value}; border-color: {value}; color: white'
+                                               onclick='st.write("{key} clicked!")'>{key}</button>"""
+        button_container += "</div> </div>"
 
-        import random
+        # Display button grid
+        st.markdown(button_container, unsafe_allow_html=True)
 
-        # Your Streamlit app code
-        # Assume you have other Streamlit components and logic here
+        #***********************************
+        df2 = pd.read_csv('Dataset/Pock choy /Generation3_pot1_Simulation.csv')
+        dataframe = df2
+        selectpot = st.selectbox('Select the SubPot Number', range(1, 41))
+        subpot = f"SubPot{selectpot}"
+        filtered_df = df2[df2['subpotnumber'] == subpot]
 
-        # Generate random numbers for the table
+        col1 , col2 = st.columns(2)
+        html_content = f"""
+                                <div style="border: 5px solid #333333; padding:10px; border-radius:5px;">
+                                    <h4 style="color: {filtered_df['subpotnumber']}; ">Health Crop Status: {filtered_df['status'].values[0]}</h2>
+                                    <h4>Current Crop Traits</h2>
+                                    <div style="overflow-x:auto;">
+                                    <table>
+                                        <tr>
+                                            <th>Leaf Count</th>
+                                            <th>Longest Leaf (mm)</th>
+                                            <th>Plant Height (mm)</th>
+                                        </tr>
+                                        <tr>
+                                            <td>{filtered_df['leafcount'].values[0]}</td>
+                                            <td>{filtered_df['longestleaf'].values[0]}</td>
+                                            <td>{filtered_df['plantheight'].values[0]}</td>
+                                        </tr>
+                                    </table>
+                                    
+                                """
+        col1.markdown(html_content, unsafe_allow_html=True)
+
+        html_content = f"""
+                                        <div style="border: 5px solid #333333; padding:10px; border-radius:5px;">
+                                            <h4 style="color: {filtered_df['subpotnumber']}; ">Health Crop Status in future: {filtered_df['status'].values[0]}</h2>
+                                            <h4>Crop Traits at day{day}</h2>
+                                            <table border='1'>
+                                                <tr>
+                                                    <th>Leaf Count</th>
+                                                    <th>Longest Leaf (mm)</th>
+                                                    <th>Plant Height (mm)</th>
+                                                </tr>
+                                                <tr>
+                                                    <td>{round(df['leafcount'].values[0],0) }</td>
+                                                    <td>{filtered_df['longestleaf'].values[0] + 22}</td>
+                                                    <td>{filtered_df['plantheight'].values[0] + 44}</td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                        """
+        col2.markdown(html_content, unsafe_allow_html=True)
 
 
-        # HTML code with randomly generated numbers
-        html = f"""
-        <div style="border: 2px solid #333333; padding:10px; border-radius:5px;">
-            <h3 style="color:#333333;">Weekly Suggestions</h3>
-            <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
-                <tr>
-                    <th style="border: 2px solid #000; padding: 10px;"></th>
-                    <th style="border: 2px solid #000; padding: 10px;">pH</th>
-                    <th style="border: 2px solid #000; padding: 10px;">Ammonia</th>
-                    <th style="border: 2px solid #000; padding: 10px;">DO</th>
-                    <th style="border: 2px solid #000; padding: 10px;">Salinity</th>
-                </tr>
-                <tr>
-                    <td style='border: 2px solid #000; padding: 10px;'>week3</td>
-                    <td style='border: 2px solid #000; padding: 10px;'>{random_ph_week3}</td>
-                    <td style='border: 2px solid #000; padding: 10px;'>{random_ammonia_week3}</td>
-                    <td style='border: 2px solid #000; padding: 10px;'>{random_do_week3}</td>
-                    <td style='border: 2px solid #000; padding: 10px;'>{random_salinity_week3}</td>
-                </tr>
-                <tr>
-                    <td style='border: 2px solid #000; padding: 10px;'>week4</td>
-                    <td style='border: 2px solid #000; padding: 10px;'>{random_ph_week4}</td>
-                    <td style='border: 2px solid #000; padding: 10px;'>{random_ammonia_week4}</td>
-                    <td style='border: 2px solid #000; padding: 10px;'>{random_do_week4}</td>
-                    <td style='border: 2px solid #000; padding: 10px;'>{random_salinity_week4}</td>
-                </tr>
-            </table>
-        </div>
-        """
+        #***********************************
 
-        # Display the HTML
-        st.write(html, unsafe_allow_html=True)
 
 

@@ -192,10 +192,6 @@ def insightConstructor():
 
     if option2 == "Rice":
 
-        performance_text = """
-        On the Performance Page, witness the epic saga of crop seasons and generations. Our cutting-edge system meticulously scores each season or generation, evaluating crucial crop traits. The comparison unfolds, revealing how other plots and pots measure up to the best. Behold the vibrant landscape, color-coded to showcase the performance hierarchy. Embark on this animated journey where each plot and pot tells a unique tale!
-        """
-
         seasons = ['Season 1', 'Season 2', 'Season 3']
         plot_numbers = {'Season 1': ['Plot1', 'Plot3', 'Plot4', 'Plot5'],
                         'Season 2': ['Plot1', 'Plot3', 'Plot4', 'Plot5'],
@@ -361,20 +357,29 @@ def insightConstructor():
         df = df.query(f"""Plot == 'P{optionplot}'""")
 
     if option2 == 'Pak choy':
-
         # Create DataFrame
         df = pd.read_csv('Dataset/Pock choy /generation.csv')
+
+
+
+
+        dfbenchmark = pd.read_csv('Dataset/Benchmark/Pakchoyparameter.csv')
+
+        p = dfbenchmark[dfbenchmark['Parameter'] == True]['Crop Traits'].iloc[0]
+        e = dfbenchmark[dfbenchmark['Parameter'] == True]['Estimation'].iloc[0]
+        eh = dfbenchmark[['Estimation' , 'Crop Traits']]
+
+
         # Filter columns
         filtered_df = df[['generation', 'pot', 'leavescount', 'longestleaf', 'plantheight']]
 
         # Group by pot and subpot, calculate averages
         grouped_df = filtered_df.groupby(['generation', 'pot']).mean().reset_index()
-
+        st.write(grouped_df)
         # Scale the values based on the height (score)
-        max_score = 10
-        height_scaling = max_score / grouped_df['plantheight'].max()
-        grouped_df['score'] = grouped_df['plantheight'] * height_scaling
-
+        max_score = e
+        height_scaling = 10
+        grouped_df['score'] = grouped_df[p] * height_scaling / max_score
         html_code_packchoy = f"""
 
             <h2 style="color: #000; text-align: center;">Performance</h2>
@@ -390,9 +395,9 @@ def insightConstructor():
                         {''.join([f'<tr><td style="border: 2px solid #000; padding: 10px;">{row["generation"]}</td>'
                                   f'<td style="border: 2px solid #000; padding: 10px;">{row["pot"]}</td>'
                                   f'<td style="border: 2px solid #000; padding: 10px; background-color: {color_cell2(10, min(row["score"], max_score), 0, 1)}">{min(row["score"], max_score):.2f}</td>'
-                                  f'<td style="border: 2px solid #000; padding: 10px; background-color: {color_cell2(214.25, row["plantheight"], 0, 1)}">{row["plantheight"]:.2f}</td>'
-                                  f'<td style="border: 2px solid #000; padding: 10px; background-color: {color_cell2(214.25, row["plantheight"], 0, 1)}">{row["plantheight"]:.2f}</td>'
-                                  f'<td style="border: 2px solid #000; padding: 10px; background-color: {color_cell2(214.25, row["plantheight"], 0, 1)}">{row["plantheight"]:.2f}</td></tr>'
+                                  f'<td style="border: 2px solid #000; padding: 10px; background-color: {color_cell2(e, row[p], 0, 1)}">{row["plantheight"]:.2f}</td>'
+                                  f'<td style="border: 2px solid #000; padding: 10px; background-color: {color_cell2(e, row[p], 0, 1)}">{row["longestleaf"]:.2f}</td>'
+                                  f'<td style="border: 2px solid #000; padding: 10px; background-color: {color_cell2(e, row[p], 0, 1)}">{row["leavescount"]:.2f}</td></tr>'
                                   for index, row in grouped_df.iterrows()])}
                     </table>
                 </div>
@@ -400,31 +405,38 @@ def insightConstructor():
         # HTML code
 
         # Streamlit app
+
+        index = grouped_df['score'].idxmax()
+
         st.markdown(html_code_packchoy, unsafe_allow_html=True)
         st.markdown(printCostumTitleAndContenth2("Best Season and Plot",
                                                  ""),
                     unsafe_allow_html=True)
         col1, col2 = st.columns(2)
+        dfs = pd.read_csv(f'Dataset/Pock choy /generation.csv')
+
+        dfp1 = dfs.query(f"""generation == {grouped_df.iloc[index]['generation']}""")
+        dfp2 = dfs.query(f"""pot == {1} & generation == {grouped_df.iloc[index]['generation']}""")
 
         with col1:
-            st.markdown(printCostumTitleAndContenth3("Generation1", ""), unsafe_allow_html=True)
+            st.markdown(printCostumTitleAndContenth3(f"Generation {grouped_df.iloc[index]['generation']}", ""), unsafe_allow_html=True)
 
             st.write("High Value Trait")
-            max_weight = 214.25  # Maximum weight in KG
-            current_weight = 128  # Current weight in KG
-            progress_html = animated_circular_progress_bar('AVG Plant Height', current_weight, max_weight,
-                                                           color='green',
+            max_weight = eh[eh['Crop Traits'] == p]['Estimation'].iloc[0]  # Maximum weight in KG
+            current_weight = dfp1[p].mean()  # Current weight in KG
+            progress_html = animated_circular_progress_bar(f'AVG {p}', current_weight, max_weight,
+                                                           color=color_cell2(e, dfp1[p].mean(), 0, 1),
                                                            max_size=200)
             st.components.v1.html(progress_html, height=210)
 
         with col2:
-            st.markdown(printCostumTitleAndContenth3("Pot1", ""), unsafe_allow_html=True)
+            st.markdown(printCostumTitleAndContenth3(f"Pot {grouped_df.iloc[index]['generation']}", ""), unsafe_allow_html=True)
 
             st.write("High Value Trait")
-            max_weight = 214.25  # Maximum weight in KG
-            current_weight = 214.25  # Current weight in KG
-            progress_html = animated_circular_progress_bar('AVG Plant Height', current_weight, max_weight,
-                                                           color='green',
+            max_weight = eh[eh['Crop Traits'] == p]['Estimation'].iloc[0] # Maximum weight in KG
+            current_weight =dfp2[p].mean()  # Current weight in KG
+            progress_html = animated_circular_progress_bar(f'AVG {p}', current_weight, max_weight,
+                                                           color=color_cell2(e, dfp2[p].mean(), 0, 1),
                                                            max_size=200)
             st.components.v1.html(progress_html, height=210)
 
@@ -458,20 +470,20 @@ def insightConstructor():
         with col1:
             st.markdown(printCostumTitleAndContenth3(f"Generation{optionseasson}", ""), unsafe_allow_html=True)
             st.write("High Value Trait")
-            max_weight = 214.25  # Maximum weight in KG
-            current_weight = dfp1['plantheight'].mean()  # Current weight in KG
-            progress_html = animated_circular_progress_bar('AVG Plant Height', current_weight, max_weight,
-                                                           color='green',
+            max_weight = eh[eh['Crop Traits'] == p]['Estimation'].iloc[0]  # Maximum weight in KG
+            current_weight = dfp1[p].mean()  # Current weight in KG
+            progress_html = animated_circular_progress_bar(f'AVG {p}', current_weight, max_weight,
+                                                           color=color_cell2(e, dfp1[p].mean(), 0, 1),
                                                            max_size=200)
             st.components.v1.html(progress_html, height=210)
 
         with col2:
             st.markdown(printCostumTitleAndContenth3(f"Plot{optionplot}", ""), unsafe_allow_html=True)
             st.write("High Value Trait")
-            max_weight = 214.25  # Maximum weight in KG
-            current_weight = dfp2['plantheight'].mean()  # Current weight in KG
-            progress_html = animated_circular_progress_bar('AVG Plant Height', current_weight, max_weight,
-                                                           color='green',
+            max_weight = eh[eh['Crop Traits'] == p]['Estimation'].iloc[0]  # Maximum weight in KG
+            current_weight = dfp2[p].mean()  # Current weight in KG
+            progress_html = animated_circular_progress_bar(f'AVG {p}', current_weight, max_weight,
+                                                           color=color_cell2(e, dfp2[p].mean(), 0, 1),
                                                            max_size=200)
             st.components.v1.html(progress_html, height=210)
 

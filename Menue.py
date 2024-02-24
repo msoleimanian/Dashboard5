@@ -6,6 +6,7 @@ import Home as home
 import Monitoring_Combine as MonitCombine
 import Simulation as sim
 import ExploreMenue as expmenu
+import Config as config
 def menuconstructor():
 
     # 1. as sidebar menu
@@ -24,6 +25,8 @@ def menuconstructor():
     if select == 'Simulation':
         sim.SimulationConstructor()
 
+    if select == 'Configuration':
+        config.ConstructorConfig()
 
     if select == 'About':
         home.homepageconstructor()
