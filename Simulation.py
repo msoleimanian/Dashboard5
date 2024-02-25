@@ -252,7 +252,8 @@ def SimulationConstructor():
         import requests
         import json
 
-        url = 'https://7efa-34-73-236-137.ngrok-free.app/LeavesCount_prediction'  # Replace with your Ngrok URL
+        url = 'https://6c0e-34-29-120-246.ngrok-free.app/LeavesCount_prediction'
+        # Replace with your Ngrok URL
         potnumberlist = []
         leafcountnumber = []
         for i in range(40):
