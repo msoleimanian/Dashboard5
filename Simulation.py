@@ -252,7 +252,7 @@ def SimulationConstructor():
         import requests
         import json
 
-        url = 'https://5070-35-199-41-137.ngrok-free.app/LeavesCount_prediction'
+        url = 'https://3e85-34-127-108-103.ngrok-free.app/LeavesCount_prediction'
         # Replace with your Ngrok URL
         potnumberlist = []
         leafcountnumber = []
@@ -338,60 +338,66 @@ def SimulationConstructor():
                                                onclick='st.write("{key} clicked!")'>{key}</button>"""
         button_container += "</div> </div>"
 
-        # Display button grid
-        st.markdown(button_container, unsafe_allow_html=True)
-
-        #***********************************
-        df2 = pd.read_csv('Dataset/Pock choy /Generation3_pot1_Simulation.csv')
-        dataframe = df2
-        selectpot = st.selectbox('Select the SubPot Number', range(1, 41))
-        subpot = f"SubPot{selectpot}"
-        filtered_df = df2[df2['subpotnumber'] == subpot]
-
         col1 , col2 = st.columns(2)
-        html_content = f"""
-                                <div style="border: 5px solid #333333; padding:10px; border-radius:5px;">
-                                    <h4 style="color: {filtered_df['subpotnumber']}; ">Crop Status: {filtered_df['status'].values[0]}</h2>
-                                    <h4>Current Crop Traits</h2>
-                                    <div style="overflow-x:auto;">
-                                    <table>
-                                        <tr>
-                                            <th>Leaf Count</th>
-                                            <th>Longest Leaf (mm)</th>
-                                            <th>Plant Height (mm)</th>
-                                        </tr>
-                                        <tr>
-                                            <td>{filtered_df['leafcount'].values[0]}</td>
-                                            <td>{filtered_df['longestleaf'].values[0]}</td>
-                                            <td>{filtered_df['plantheight'].values[0]}</td>
-                                        </tr>
-                                    </table>
-                                    
-                                """
-        col1.markdown(html_content, unsafe_allow_html=True)
 
-        html_content = f"""
-                                        <div style="border: 5px solid #333333; padding:10px; border-radius:5px;">
-                                            <h4 style="color: {filtered_df['subpotnumber']}; ">Crop Status in future: {filtered_df['status'].values[0]}</h2>
-                                            <h4>Crop Traits at day{day}</h2>
-                                            <table border='1'>
-                                                <tr>
-                                                    <th>Leaf Count</th>
-                                                    <th>Longest Leaf (mm)</th>
-                                                    <th>Plant Height (mm)</th>
-                                                </tr>
-                                                <tr>
-                                                    <td>{round(df['leafcount'].values[0],0) }</td>
-                                                    <td>{filtered_df['longestleaf'].values[0] + 22}</td>
-                                                    <td>{filtered_df['plantheight'].values[0] + 44}</td>
-                                                </tr>
-                                            </table>
-                                        </div>
-                                        """
-        col2.markdown(html_content, unsafe_allow_html=True)
+        # Display button grid
+        with col1:
+            st.markdown(button_container, unsafe_allow_html=True)
+
+        with col2:
+            #***********************************
+            df2 = pd.read_csv('Dataset/Pock choy /Generation3_pot1_Simulation.csv')
+            dataframe = df2
+            selectpot = st.selectbox('Select the SubPot Number', range(1, 41))
+            subpot = f"SubPot{selectpot}"
+            filtered_df = df2[df2['subpotnumber'] == subpot]
+
+            html_content = f"""
+                                    <div style="border: 5px solid #333333; padding:10px; border-radius:5px;">
+                                        <h4 style="color: {filtered_df['subpotnumber']}; ">Crop Status: {filtered_df['status'].values[0]}</h2>
+                                        <h4>Current Crop Traits</h2>
+                                        <div style="overflow-x:auto;">
+                                        <table>
+                                            <tr>
+                                                <th>Leaf Count</th>
+                                                <th>Longest Leaf (mm)</th>
+                                                <th>Plant Height (mm)</th>
+                                            </tr>
+                                            <tr>
+                                                <td>{filtered_df['leafcount'].values[0]}</td>
+                                                <td>{filtered_df['longestleaf'].values[0]}</td>
+                                                <td>{filtered_df['plantheight'].values[0]}</td>
+                                            </tr>
+                                        </table>
+                                        
+                                    """
+            html_content = f"""
+                                            <div style="border: 5px solid #333333; padding:10px; border-radius:5px;">
+                                                <h4 style="color: {filtered_df['subpotnumber']}; ">Crop Status in future: {filtered_df['status'].values[0]}</h2>
+                                                <table border='1'>
+                                                    <tr>
+                                                        <th>Leaf Count</th>
+                                                        <th>Longest Leaf (mm)</th>
+                                                        <th>Plant Height (mm)</th>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>{round(df['leafcount'].values[0],0) }</td>
+                                                        <td>{filtered_df['longestleaf'].values[0] + 22}</td>
+                                                        <td>{filtered_df['plantheight'].values[0] + 44}</td>
+                                                        <td> Predicted Traits at day{day} </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>{round(df['leafcount'].values[0],0)+5 }</td>
+                                                        <td>{filtered_df['longestleaf'].values[0] + 66}</td>
+                                                        <td>{filtered_df['plantheight'].values[0] + 75}</td>
+                                                        <td> Target Traits at day{day} </td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+                                            """
+            col2.markdown(html_content, unsafe_allow_html=True)
 
 
-        #***********************************
 
 
 
