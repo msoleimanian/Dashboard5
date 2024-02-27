@@ -163,13 +163,14 @@ def ConstructorConfig():
 
 
     if option2 == "Pak choy":
-        st.markdown(printWithTitleAndBoarder1('Configuration', """Deefine your goal for pak choy traits during harvesting time.""") , unsafe_allow_html=True)
+        st.markdown(printWithTitleAndBoarder1('Configuration', """Define your goal for pak choy traits during harvesting time.""") , unsafe_allow_html=True)
         st.write('')
         st.header('Crop Traits')
+
         data_df = pd.DataFrame(
             {
                 "Crop Traits": ["Plant Height", "Longest Leaf", "Leaf Count"],
-                "Is is Important Trait": [False, True, False],
+                "Is it Important Trait": [False, True, False],
                 "Goal": ["260", "150", "11"],  # New column for text input
             }
         )
@@ -189,8 +190,12 @@ def ConstructorConfig():
         )
 
 
-        st.markdown(printWithTitleAndBoarder1('Yeild Configuration', """Please define your ideal and goal for each farm yield during harvesting time. This data aids the system in showing the status of the future and daily recommendation.""") , unsafe_allow_html=True)
 
+
+
+
+        #st.markdown(printWithTitleAndBoarder1('Yeild Configuration', """Please define your ideal and goal for each farm yield during harvesting time. This data aids the system in showing the status of the future and daily recommendation.""") , unsafe_allow_html=True)
+        st.header('Yeild')
         yeild_pakchoy = 1100
         col1 , col2 = st.columns(2)
         with col1:

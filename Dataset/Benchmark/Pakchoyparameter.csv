@@ -1,4 +1,4 @@
-Crop Traits,Parameter,Estimation,yeild
-plantheight,False,260,1100
-longestleaf,True,150,1100
-leavescount,False,15,1100
+Crop Traits,Is it Important Trait,Goal,yeild
+plantheight,True,260,1100
+longestleaf,False,150,1100
+leavescount,False,11,1100

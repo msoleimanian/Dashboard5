@@ -424,9 +424,9 @@ def MonitConstructor():
                         <td> Predicted </td>
                     </tr>
                     <tr>
-                        <td>{dfbenchmark[dfbenchmark['Crop Traits'] == 'leavescount']['Estimation'].values[0] }</td>
-                        <td>{dfbenchmark[dfbenchmark['Crop Traits'] == 'longestleaf']['Estimation'].values[0] }</td>
-                        <td>{dfbenchmark[dfbenchmark['Crop Traits'] == 'plantheight']['Estimation'].values[0] }</td>
+                        <td>{dfbenchmark[dfbenchmark['Crop Traits'] == 'leavescount']['Goal'].values[0] }</td>
+                        <td>{dfbenchmark[dfbenchmark['Crop Traits'] == 'longestleaf']['Goal'].values[0] }</td>
+                        <td>{dfbenchmark[dfbenchmark['Crop Traits'] == 'plantheight']['Goal'].values[0] }</td>
                         <td> Target </td>
                     </tr>
                 </table>

@@ -172,11 +172,10 @@ def insightConstructor():
         elif value < best_value * 0.15:
             return f'red'
         elif value < best_value * 0.45:
-            return f'#ff6666'
+            return f'orange'
         elif value < best_value * 0.85:
-            return f'#ffcc99'
-        elif value > best_value * 0.85:
-            return f'#b3ffb3'
+            return f'yellow'
+
 
     # Data
     option2 = option_menu(None, ["Pak choy", "Rice", "Aqua"],
@@ -365,9 +364,9 @@ def insightConstructor():
 
         dfbenchmark = pd.read_csv('Dataset/Benchmark/Pakchoyparameter.csv')
 
-        p = dfbenchmark[dfbenchmark['Parameter'] == True]['Crop Traits'].iloc[0]
-        e = dfbenchmark[dfbenchmark['Parameter'] == True]['Estimation'].iloc[0]
-        eh = dfbenchmark[['Estimation' , 'Crop Traits']]
+        p = dfbenchmark[dfbenchmark['Is it Important Trait'] == True]['Crop Traits'].iloc[0]
+        e = dfbenchmark[dfbenchmark['Is it Important Trait'] == True]['Goal'].iloc[0]
+        eh = dfbenchmark[['Goal' , 'Crop Traits']]
 
 
         # Filter columns
@@ -421,7 +420,7 @@ def insightConstructor():
             st.markdown(printCostumTitleAndContenth3(f"Generation {grouped_df.iloc[index]['generation']}", ""), unsafe_allow_html=True)
 
             st.write("High Value Trait")
-            max_weight = eh[eh['Crop Traits'] == p]['Estimation'].iloc[0]  # Maximum weight in KG
+            max_weight = eh[eh['Crop Traits'] == p]['Goal'].iloc[0]  # Maximum weight in KG
             current_weight = dfp1[p].mean()  # Current weight in KG
             progress_html = animated_circular_progress_bar(f'AVG {p}', current_weight, max_weight,
                                                            color=color_cell2(e, dfp1[p].mean(), 0, 1),
@@ -432,7 +431,7 @@ def insightConstructor():
             st.markdown(printCostumTitleAndContenth3(f"Pot {grouped_df.iloc[index]['generation']}", ""), unsafe_allow_html=True)
 
             st.write("High Value Trait")
-            max_weight = eh[eh['Crop Traits'] == p]['Estimation'].iloc[0] # Maximum weight in KG
+            max_weight = eh[eh['Crop Traits'] == p]['Goal'].iloc[0] # Maximum weight in KG
             current_weight =dfp2[p].mean()  # Current weight in KG
             progress_html = animated_circular_progress_bar(f'AVG {p}', current_weight, max_weight,
                                                            color=color_cell2(e, dfp2[p].mean(), 0, 1),
@@ -469,7 +468,7 @@ def insightConstructor():
         with col1:
             st.markdown(printCostumTitleAndContenth3(f"Generation{optionseasson}", ""), unsafe_allow_html=True)
             st.write("High Value Trait")
-            max_weight = eh[eh['Crop Traits'] == p]['Estimation'].iloc[0]  # Maximum weight in KG
+            max_weight = eh[eh['Crop Traits'] == p]['Goal'].iloc[0]  # Maximum weight in KG
             current_weight = dfp1[p].mean()  # Current weight in KG
             progress_html = animated_circular_progress_bar(f'AVG {p}', current_weight, max_weight,
                                                            color=color_cell2(e, dfp1[p].mean(), 0, 1),
@@ -479,7 +478,7 @@ def insightConstructor():
         with col2:
             st.markdown(printCostumTitleAndContenth3(f"Plot{optionplot}", ""), unsafe_allow_html=True)
             st.write("High Value Trait")
-            max_weight = eh[eh['Crop Traits'] == p]['Estimation'].iloc[0]  # Maximum weight in KG
+            max_weight = eh[eh['Crop Traits'] == p]['Goal'].iloc[0]  # Maximum weight in KG
             current_weight = dfp2[p].mean()  # Current weight in KG
             progress_html = animated_circular_progress_bar(f'AVG {p}', current_weight, max_weight,
                                                            color=color_cell2(e, dfp2[p].mean(), 0, 1),
