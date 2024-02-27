@@ -36,7 +36,7 @@ def printWithTitleAndBoarder(title, context):
                     <tr>
                         <th>Pot Number</th>
                         <th>Predicted Crop Health Status</th>
-                        <th>Yeild Report</th>
+                        <th>Yield Report</th>
                     </tr>
                     <tr>
                         <td>1</td>
