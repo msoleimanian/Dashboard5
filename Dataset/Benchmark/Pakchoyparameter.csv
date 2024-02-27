@@ -1,4 +1,4 @@
 Crop Traits,Parameter,Estimation,yeild
 plantheight,False,260,1100
-longestleaf,False,150,1100
-leavescount,True,11,1100
+longestleaf,True,150,1100
+leavescount,False,15,1100

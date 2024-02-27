@@ -52,6 +52,86 @@ def printWithTitleAndBoarder(title, context):
         </div>
         """
 
+def createprediction():
+    return f"""
+    
+    
+     <div style="border: 2px solid #333333; padding:10px; border-radius:5px;">
+            <h4 style="color:#333333;">Prediction at week4</h4>
+            <div style="display: flex; justify-content: center; align-items: center; height: 5vh;">
+                <div style="font-size: 24px; font-weight: bold; background-color: #FF4136; color: #FFFFFF; padding: 10px; border-radius: 5px; animation: pulse 1s infinite alternate;">
+                <span style="animation: blink-animation 1s steps(5, start) infinite; color: #FFFF00;">WARNING!</span> Risk Detected!
+                </div>
+            </div>
+            <h4 style="color:#333333;">Health Status of the Pots</h4>
+            <table>
+                    <tr>
+                        <th>Pot Number</th>
+                        <th>Predicted status</th>
+                        <th>Explanation</th>
+                    </tr>
+                    <tr>
+                        <td>1</td>
+                        <td style="color : red;">bad(Average Weight is 670 gram)</td>
+                        <td style="color : red;">% 39.09 lower than the best, Best weight grain is 1100 gram.</td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td style="color : red;">bad(Average Weight is 690 gram) </td>
+                        <td style="color : red;">% 37.27 lower than the best, Best weight grain is 1100 gram.</td>
+                    </tr>
+            </table>
+        </div>
+        
+            """
+    warning_html = """
+    <style>
+    .warning-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+    }
+
+    .warning-message {
+        font-size: 24px;
+        font-weight: bold;
+        background-color: #FF4136;
+        color: #FFFFFF;
+        padding: 20px;
+        border-radius: 5px;
+        animation: pulse 1s infinite alternate;
+    }
+
+    @keyframes pulse {
+        from {
+            transform: scale(1);
+        }
+        to {
+            transform: scale(1.1);
+        }
+    }
+
+    .blink {
+        animation: blink-animation 1s steps(5, start) infinite;
+        color: #FFFF00;
+    }
+
+    @keyframes blink-animation {
+        to {
+            visibility: hidden;
+        }
+    }
+    </style>
+
+    <div class="warning-container">
+        <div class="warning-message">
+            <span class="blink">WARNING!</span> Risk Detected!
+        </div>
+    </div>
+    """
+
+    st.markdown(warning_html, unsafe_allow_html=True)
 
 def cardCreator(title, value):
     html_code = """
@@ -235,8 +315,7 @@ def MonitConstructor():
                                                              'Farm health Status: Good (7/10)', ),
                         unsafe_allow_html=True)
         with col2:
-            st.markdown(printWithTitleAndBoarder('Predicted Health Status Generation 3 at week4',
-                                                 'Farm health Status: Good - 7/10'), unsafe_allow_html=True)
+            st.markdown(createprediction(), unsafe_allow_html=True)
 
         optionpot = st.selectbox('Select the pot:', (1, 2))
         # Your dataframe
@@ -319,12 +398,13 @@ def MonitConstructor():
 
         with col2:
             df = pd.read_csv('Dataset/Pock choy /Generation3_pot1.csv')
+            dfbenchmark = pd.read_csv('Dataset/Benchmark/Pakchoyparameter.csv')
             subpot = st.selectbox('Select the SubPot Number', df['subpotnumber'].unique())
             filtered_df = df[df['subpotnumber'] == subpot]
             html_content = f"""
             <div style="border: 2px solid #333333; padding:10px; border-radius:5px;">
-                <h2 style="color: {dataframe[subpot]}; ">Health Crop Status: {filtered_df['status'].values[0]}</h2>
-                <h2>Current Crop Traits</h2>
+                <h2 style="color: {dataframe[subpot]}; ">Crop Status: {filtered_df['status'].values[0]}</h2>
+                <h2>Crop Traits Status</h2>
                 <table>
                     <tr>
                         <th>Leaf Count</th>
@@ -335,19 +415,19 @@ def MonitConstructor():
                         <td>{filtered_df['leafcount'].values[0]}</td>
                         <td>{filtered_df['longestleaf'].values[0]}</td>
                         <td>{filtered_df['plantheight'].values[0]}</td>
-                    </tr>
-                </table>
-                <h2>Crop Traits at week4</h2>
-                <table border='1'>
-                    <tr>
-                        <th>Leaf Count</th>
-                        <th>Longest Leaf (mm)</th>
-                        <th>Plant Height (mm)</th>
+                        <td> Current </td>
                     </tr>
                     <tr>
-                        <td>{filtered_df['leafcount'].values[0] + 3}</td>
-                        <td>{filtered_df['longestleaf'].values[0] + 22}</td>
-                        <td>{filtered_df['plantheight'].values[0] + 44}</td>
+                        <td>{filtered_df['leafcount'].values[0] + 1}</td>
+                        <td>{filtered_df['longestleaf'].values[0] + 12}</td>
+                        <td>{filtered_df['plantheight'].values[0] + 24}</td>
+                        <td> Predicted </td>
+                    </tr>
+                    <tr>
+                        <td>{dfbenchmark[dfbenchmark['Crop Traits'] == 'leavescount']['Estimation'].values[0] }</td>
+                        <td>{dfbenchmark[dfbenchmark['Crop Traits'] == 'longestleaf']['Estimation'].values[0] }</td>
+                        <td>{dfbenchmark[dfbenchmark['Crop Traits'] == 'plantheight']['Estimation'].values[0] }</td>
+                        <td> Target </td>
                     </tr>
                 </table>
             </div>
@@ -440,9 +520,11 @@ def MonitConstructor():
 
         # Display the 3D plot
 
-        st.markdown(printWithTitleAndBoarder1('3D Model' , 'Here You can see the 3D model of the greenhouse'),unsafe_allow_html= True)
+        st.write('')
+        st.markdown(printWithTitleAndBoarder1('3D Model' , ''),unsafe_allow_html= True)
 
-        create_3d_plot(df, key='unique_chart3')
+        with st.expander('3D model'):
+            create_3d_plot(df, key='unique_chart3')
 
         #__------------------------------------------------------------
         st.markdown(textwithboarder('Real-time Traits',
