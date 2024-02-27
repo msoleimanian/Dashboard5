@@ -316,6 +316,63 @@ def MonitConstructor():
                         unsafe_allow_html=True)
         with col2:
             st.markdown(createprediction(), unsafe_allow_html=True)
+            benchmark = {'Temperature': 24, 'Salinity': 5, 'TDS': 12, 'Orp': 22, 'Sr': 7, 'EC': 13, 'pH': 6}
+            dataset = {
+                'Generation 3': {
+                    'Pot 1': {"Temperature": 25.5, "Salinity": 35, "TDS": 400, "Orp": 200, "Sr": 10, "pH": 7.2,
+                              'EC': 13},
+                    'Pot 2': {"Temperature": 24.8, "Salinity": 34, "TDS": 390, "Orp": 210, "Sr": 12, "pH": 7.5,
+                              'EC': 13}
+                },
+                'Generation 4': {
+                    'Pot 1': {"Temperature": 26.2, "Salinity": 36, "TDS": 410, "Orp": 195, "Sr": 9, "pH": 7.0,
+                              'EC': 13},
+                    'Pot 2': {"Temperature": 25.7, "Salinity": 35.5, "TDS": 405, "Orp": 205, "Sr": 11, "pH": 7.3,
+                              'EC': 13}
+                }
+
+            }
+            html = f"""
+
+                                                    <div style="border: 2px solid #333333; padding:10px; border-radius:5px;">
+                                                            <h3 style="color:#333333;">Daily Suggestions</h3>
+                                                            <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
+                                                        <tr>
+                                                            <th style="border: 2px solid #000; padding: 10px;"></th>
+                                                            <th style="border: 2px solid #000; padding: 10px;">Temperature</th>
+                                                            <th style="border: 2px solid #000; padding: 10px;">Salinity</th>
+                                                            <th style="border: 2px solid #000; padding: 10px;">TDS</th>
+                                                            <th style="border: 2px solid #000; padding: 10px;">Orp</th>
+                                                            <th style="border: 2px solid #000; padding: 10px;">Sr</th>    
+                                                            <th style="border: 2px solid #000; padding: 10px;">EC</th>    
+                                                            <th style="border: 2px solid #000; padding: 10px;">pH</th>    
+                                                    <tr>
+                                                    <td style='border: 2px solid #000; padding: 10px;'>Pot1</td>
+                                                    <td style='border: 2px solid #000; padding: 10px;'>{-1.5}</td>
+                                                    <td style='border: 2px solid #000; padding: 10px;'>{-30}</td>
+                                                    <td style='border: 2px solid #000; padding: 10px;'>{-388}</td>
+                                                    <td style='border: 2px solid #000; padding: 10px;'>{-178}</td>
+                                                    <td style='border: 2px solid #000; padding: 10px;'>{-3}</td>
+                                                    <td style='border: 2px solid #000; padding: 10px;'>{0}</td>
+                                                    <td style='border: 2px solid #000; padding: 10px;'>{-1.2}</td>
+                                                    </tr>
+                                                    
+                                                    <tr>
+                                                    <td style='border: 2px solid #000; padding: 10px;'>Pot2</td>
+                                                    <td style='border: 2px solid #000; padding: 10px;'>{-0.8}</td>
+                                                    <td style='border: 2px solid #000; padding: 10px;'>{-29}</td>
+                                                    <td style='border: 2px solid #000; padding: 10px;'>{-378}</td>
+                                                    <td style='border: 2px solid #000; padding: 10px;'>{-188}</td>
+                                                    <td style='border: 2px solid #000; padding: 10px;'>{-5}</td>
+                                                    <td style='border: 2px solid #000; padding: 10px;'>{0}</td>
+                                                    <td style='border: 2px solid #000; padding: 10px;'>{-1.5}</td>
+                                                    </tr>
+                                                    
+
+                                                    </table>
+                                                    </div>
+                                                """
+            st.markdown(html, unsafe_allow_html=True)
 
         optionpot = st.selectbox('Select the pot:', (1, 2))
         # Your dataframe
@@ -434,6 +491,7 @@ def MonitConstructor():
             """
             st.markdown(html_content, unsafe_allow_html=True)
 
+
         #--------------------------------------------- Real time monitoring
 
         if optionpot == 1:
@@ -528,7 +586,7 @@ def MonitConstructor():
 
         #__------------------------------------------------------------
         st.markdown(textwithboarder('Real-time Traits',
-                                    f"""View the latest data from Aqua Fish traits and explore the forecast for the upcoming traits. (latest data)"""))
+                                    f"""View the latest data from UCTC for Pak Choy traits and explore the forecast for the upcoming traits. (latest data)"""))
         col1, col2, col3, col4, col5, col6 = st.columns(6)
         with col1:
             cardCreator('Average Longest Leaf', 88)

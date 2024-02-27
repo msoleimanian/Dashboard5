@@ -166,7 +166,7 @@ def ConstructorConfig():
         st.markdown(printWithTitleAndBoarder1('Configuration', """Define your goal for pak choy traits during harvesting time.""") , unsafe_allow_html=True)
         st.write('')
         st.header('Crop Traits')
-
+        data_edited = pd.DataFrame()
         data_df = pd.DataFrame(
             {
                 "Crop Traits": ["Plant Height", "Longest Leaf", "Leaf Count"],
@@ -175,26 +175,35 @@ def ConstructorConfig():
             }
         )
 
-        data_edited = st.data_editor(
-            data_df,
-            column_config={
-                "favorite": st.column_config.CheckboxColumn(
-                    "Which ones are important?",
-                    help="which crop traits is important for the Scoring?",
-                    default=False,
-                ),
-                "text_input": st.column_config.TextColumn("Your Estimation of the Amount of the Crop traits when you want to harvest.", help="Put a number that show the amount of the IDEAL crop traits "),
-            },
-            disabled=["widgets"],
-            hide_index=True,
-        )
 
+        col1, col2 = st.columns(2)
+        with col1:
+            genre = st.radio(
+            "",
+            ["Default: Table show that which trait is important and what is the goal value of the traits.",
+             "Customize: Select the important traits and put the for the value of the goal."],
+            index=0,
+            )
 
+        with col2:
+            if genre == "Default: Table show that which trait is important and what is the goal value of the traits.":
+                st.write(data_df)
 
+            elif genre == "Customize: Select the important traits and put the for the value of the goal.":
+                data_edited = st.data_editor(
+                    data_df,
+                    column_config={
+                        "favorite": st.column_config.CheckboxColumn(
+                            "Which ones are important?",
+                            help="which crop traits is important for the Scoring?",
+                            default=False,
+                        ),
+                        "text_input": st.column_config.TextColumn("Your Estimation of the Amount of the Crop traits when you want to harvest.", help="Put a number that show the amount of the IDEAL crop traits "),
+                    },
+                    disabled=["widgets"],
+                    hide_index=True,
+                )
 
-
-
-        #st.markdown(printWithTitleAndBoarder1('Yeild Configuration', """Please define your ideal and goal for each farm yield during harvesting time. This data aids the system in showing the status of the future and daily recommendation.""") , unsafe_allow_html=True)
         st.header('Yeild')
         yeild_pakchoy = 1100
         col1 , col2 = st.columns(2)
@@ -208,6 +217,7 @@ def ConstructorConfig():
             if genre == "Put your Estimation of the yield of the Pak choy":
                 text_input = st.text_input('Put your Estimation.')
                 yeild_pakchoy = text_input
+
 
         data_edited['Crop Traits'] = ['plantheight', 'longestleaf', 'leavescount']
 

@@ -79,7 +79,7 @@ def insightConstructor():
             <div id="progress-container" style="width: {max_size}px; height: {max_size}px; position: relative; border-radius: 50%; overflow: hidden;">
                 <div id="progress-circle" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></div>
                 <div id="animated-circle" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></div>
-                <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; color: {color}; font-size: 11px; font-weight: bold;">{label}<br>{value} </div>
+                <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; color: black ; font-size: 11px; font-weight: bold;">{label}<br>{value} </div>
             </div>
 
             <script src="https://cdnjs.cloudflare.com/ajax/libs/progressbar.js/1.0.1/progressbar.min.js"></script>
@@ -175,6 +175,8 @@ def insightConstructor():
             return f'orange'
         elif value < best_value * 0.85:
             return f'yellow'
+        else:
+            return 'green'
 
 
     # Data
