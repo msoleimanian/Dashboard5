@@ -46,7 +46,7 @@ def printWithTitleAndBoarder(title, context):
                     <tr>
                         <td>2</td>
                         <td style="color : red;">bad</td>
-                        <td style="color : red;">Predicted Average Weight for GenerationGeneration 3 at Week4: 690 gram (% 37.27 lower than the best, Best weight grain is 1100 gram.)</td>
+                        <td style="color : red;">Predicted Average Weight for Generation 3 at Week4: 690 gram (% 37.27 lower than the best, Best weight grain is 1100 gram.)</td>
                     </tr>
             </table>
         </div>
