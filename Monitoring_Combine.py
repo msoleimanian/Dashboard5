@@ -35,7 +35,7 @@ def printWithTitleAndBoarder(title, context):
             <table>
                     <tr>
                         <th>Pot Number</th>
-                        <th>Predicted Crop Health Status</th>
+                        <th>Predicted Crop Status</th>
                         <th>Yield Report</th>
                     </tr>
                     <tr>
@@ -60,7 +60,7 @@ def createprediction():
             <h4 style="color:#333333;">Prediction at week4</h4>
             <div style="display: flex; justify-content: center; align-items: center; height: 5vh;">
                 <div style="font-size: 24px; font-weight: bold; background-color: #FF4136; color: #FFFFFF; padding: 10px; border-radius: 5px; animation: pulse 1s infinite alternate;">
-                <span style="animation: blink-animation 1s steps(5, start) infinite; color: #FFFF00;">WARNING!</span> Risk Detected!
+                <span style="animation: blink-animation 1s steps(5, start) infinite; color: #FFFF00;">WARNING!</span>
                 </div>
             </div>
             <h4 style="color:#333333;">Health Status of the Pots</h4>
@@ -72,13 +72,13 @@ def createprediction():
                     </tr>
                     <tr>
                         <td>1</td>
-                        <td style="color : red;">bad(Average Weight is 670 gram)</td>
-                        <td style="color : red;">% 39.09 lower than the best, Best weight grain is 1100 gram.</td>
+                        <td style="color : red;">bad(670 gram)</td>
+                        <td style="color : red;">39.09%</td>
                     </tr>
                     <tr>
                         <td>2</td>
-                        <td style="color : red;">bad(Average Weight is 690 gram) </td>
-                        <td style="color : red;">% 37.27 lower than the best, Best weight grain is 1100 gram.</td>
+                        <td style="color : red;">bad(690 gram) </td>
+                        <td style="color : red;">37.27%</td>
                     </tr>
             </table>
         </div>
@@ -243,11 +243,11 @@ def printWithTitleAndBoarderwithoutTable(title, context):
                         <td>4 week</td>
                     </tr>
             </table>
-            <h4 style="color:#333333;">Health Status of the Pots</h4>
+            <h4 style="color:#333333;">  Status of the Pots</h4>
             <table>
                     <tr>
                         <th>Pot Number</th>
-                        <th>Current Crop Health Status</th>
+                        <th>Current Crop   Status</th>
                     </tr>
                     <tr>
                         <td>1</td>
@@ -311,8 +311,8 @@ def MonitConstructor():
         df = pd.read_csv('Dataset/Pock choy /Generation3_pot1.csv')
         col1, col2 = st.columns(2)
         with col1:
-            st.markdown(printWithTitleAndBoarderwithoutTable('Current Health Status Generation 3',
-                                                             'Farm health Status: Good (7/10)', ),
+            st.markdown(printWithTitleAndBoarderwithoutTable('Current Status Generation 3',
+                                                             'Farm Status: Good (7/10)', ),
                         unsafe_allow_html=True)
         with col2:
             st.markdown(createprediction(), unsafe_allow_html=True)
@@ -460,7 +460,7 @@ def MonitConstructor():
             filtered_df = df[df['subpotnumber'] == subpot]
             html_content = f"""
             <div style="border: 2px solid #333333; padding:10px; border-radius:5px;">
-                <h2 style="color: {dataframe[subpot]}; ">Crop Status: {filtered_df['status'].values[0]}</h2>
+                <h2 style="color: {dataframe[subpot]}; ">Crop Traits Status: {filtered_df['status'].values[0]}</h2>
                 <h2>Crop Traits Status</h2>
                 <table>
                     <tr>
