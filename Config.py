@@ -163,13 +163,14 @@ def ConstructorConfig():
 
 
     if option2 == "Pak choy":
-        st.markdown(printWithTitleAndBoarder1('Traits Configuration', """Please define your ideal and goal for each crop traits during harvesting time. This data aids the system in scoring and providing insights into your crop's status.""") , unsafe_allow_html=True)
+        st.markdown(printWithTitleAndBoarder1('Configuration', """Deefine your goal for pak choy traits during harvesting time.""") , unsafe_allow_html=True)
         st.write('')
+        st.header('Crop Traits')
         data_df = pd.DataFrame(
             {
                 "Crop Traits": ["Plant Height", "Longest Leaf", "Leaf Count"],
-                "Parameter": [False, True, False],
-                "Estimation": ["260", "150", "11"],  # New column for text input
+                "Is is Important Trait": [False, True, False],
+                "Goal": ["260", "150", "11"],  # New column for text input
             }
         )
 

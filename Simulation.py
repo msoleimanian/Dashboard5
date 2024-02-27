@@ -236,7 +236,7 @@ def SimulationConstructor():
     if option2 == "Pak choy":
 
         #***********************
-        st.markdown(printWithTitleAndBoarder1('Simulation' , """Select the information regarding these parameters, and the system will generate future leaf counts. Define these parameters: 'Pot', 'Water Temperature', 'Water pH', 'Water Sr', 'Water ORP', 'Water TDS', 'Water EC', 'Day'. The system will then provide the corresponding leaf count predictions.""") , unsafe_allow_html=True)
+        st.markdown(printWithTitleAndBoarder1('Simulation' , """""") , unsafe_allow_html=True)
         st.write('')
         col1, col2 = st.columns(2)
         temperature = col1.slider("Temperature (°C)", min_value=0.0, max_value=40.0,step=0.1)
@@ -248,7 +248,7 @@ def SimulationConstructor():
         ph = col1.slider("pH", min_value=0.0, max_value=14.0,  step=0.1)
 
         day = col1.slider("Day", min_value=10.0, max_value=31.0, step=1.0)
-        potnumber = col2.selectbox('Select the potnumber:', (1, 2))
+        potnumber = col2.selectbox('Select the Pot:', (1, 2))
         import requests
         import json
 
@@ -351,7 +351,7 @@ def SimulationConstructor():
         col1 , col2 = st.columns(2)
         html_content = f"""
                                 <div style="border: 5px solid #333333; padding:10px; border-radius:5px;">
-                                    <h4 style="color: {filtered_df['subpotnumber']}; ">Health Crop Status: {filtered_df['status'].values[0]}</h2>
+                                    <h4 style="color: {filtered_df['subpotnumber']}; ">Crop Status: {filtered_df['status'].values[0]}</h2>
                                     <h4>Current Crop Traits</h2>
                                     <div style="overflow-x:auto;">
                                     <table>
@@ -372,7 +372,7 @@ def SimulationConstructor():
 
         html_content = f"""
                                         <div style="border: 5px solid #333333; padding:10px; border-radius:5px;">
-                                            <h4 style="color: {filtered_df['subpotnumber']}; ">Health Crop Status in future: {filtered_df['status'].values[0]}</h2>
+                                            <h4 style="color: {filtered_df['subpotnumber']}; ">Crop Status in future: {filtered_df['status'].values[0]}</h2>
                                             <h4>Crop Traits at day{day}</h2>
                                             <table border='1'>
                                                 <tr>

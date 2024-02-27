@@ -521,7 +521,7 @@ def MonitConstructor():
         # Display the 3D plot
 
         st.write('')
-        st.markdown(printWithTitleAndBoarder1('3D Model' , ''),unsafe_allow_html= True)
+        st.markdown(printWithTitleAndBoarder1('3D Model Farm' , ''),unsafe_allow_html= True)
 
         with st.expander('3D model'):
             create_3d_plot(df, key='unique_chart3')
