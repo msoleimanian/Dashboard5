@@ -252,9 +252,7 @@ def SimulationConstructor():
         import requests
         import json
 
-        url = 'https://86f2-35-245-246-49.ngrok-free.app/LeavesCount_prediction'
-
-
+        url = 'https://0ca8-34-85-208-144.ngrok-free.app/LeavesCount_prediction'
 
         # Replace with your Ngrok URL
         potnumberlist = []
