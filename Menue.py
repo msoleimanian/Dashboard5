@@ -12,7 +12,7 @@ def menuconstructor():
     # 1. as sidebar menu
     st.set_page_config(layout="wide")
     with st.sidebar:
-        select = option_menu("AgroPulse TwinHub", [ 'Monitoring' , 'Explore' , 'Simulation' , 'Configuration', 'About'],
+        select = option_menu("AgroPulse TwinHub", [ 'Monitoring' , 'Explore' , 'Simulation' , 'Configuration' , 'Detection', 'About'],
              menu_icon="database-up")
 
 
