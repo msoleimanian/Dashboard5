@@ -9,6 +9,10 @@ import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 
 
+def get_download_link(file_path):
+    """Generate a download link for the file."""
+    return f'<a href="{file_path}" download>Click here to download the file</a>'
+
 def Detection_constructor():
     st.header('Weed Detection')
     import pandas as pd
@@ -30,6 +34,11 @@ def Detection_constructor():
 
             # Display the path to the uploaded file
             st.write("File path:", file_path)
+
+            # Display a download link for the uploaded file
+            st.markdown(get_download_link(file_path), unsafe_allow_html=True)
+
+
 
 
 
