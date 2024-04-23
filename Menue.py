@@ -7,6 +7,7 @@ import Monitoring_Combine as MonitCombine
 import Simulation as sim
 import ExploreMenue as expmenu
 import Config as config
+import Detection as dec
 def menuconstructor():
 
     # 1. as sidebar menu
@@ -30,6 +31,9 @@ def menuconstructor():
 
     if select == 'About':
         home.homepageconstructor()
+
+    if select == 'Detection':
+        dec.Detection_constructor()
 
 
 if __name__ == '__main__':
